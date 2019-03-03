@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name                AE Extras Rick
-// @namespace           http://www.vig.vg/
+// @namespace           http://www.astroempires.com
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
+// @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @grant GM_setValue
 // @grant GM_getValue
 // @grant GM_setClipboard
@@ -9,19 +10,19 @@
 // @grant window.close
 // @grant window.focus
 // @grant GM_addStyle
-// @include             http://*.astroempires.com/*
+// @include             http*://*.astroempires.com/*
 // @include             http://www.vig.vg/*
-// @exclude             http://*.astroempires.com/
-// @exclude             http://*.astroempires.com/home.aspx*
-// @exclude             http://*.astroempires.com/login.aspx*
-// @exclude             http://*.astroempires.com/profile.aspx?action=*
-// @exclude             http://forum.astroempires.com/*
-// @exclude             http://support.astroempires.com/*
-// @exclude             http://wiki.astroempires.com/*
-// @exclude             http://wiki.astroempires.com/*/*
-// @exclude             http://*.astroempires.com/upgrade.aspx*
-// @exclude             http://*.astroempires.com/tables.aspx*
-// @exclude        http://*.astroempires.com/smilies.aspx*
+// @exclude             http*://*.astroempires.com/
+// @exclude             http*://*.astroempires.com/home.aspx*
+// @exclude             http*://*.astroempires.com/login.aspx*
+// @exclude             http*://*.astroempires.com/profile.aspx?action=*
+// @exclude             http*://forum.astroempires.com/*
+// @exclude             http*://support.astroempires.com/*
+// @exclude             http*://wiki.astroempires.com/*
+// @exclude             http*://wiki.astroempires.com/*/*
+// @exclude             http*://*.astroempires.com/upgrade.aspx*
+// @exclude             http*://*.astroempires.com/tables.aspx*
+// @exclude             http*://*.astroempires.com/smilies.aspx*
 // ==/UserScript==
 /*
 AE Extras Creator -- knubile (May 2008)
@@ -29,7 +30,8 @@ AE Extras Coder -- Cold-Phoenix (Sep 6, 2008)
 AE Extras WoG Edit -- Mapleson (Apr 10, 2009)
 AE Extras WoG Edit(After Sever Layout Change) -- Vig (May 23, 2009)
 AE Bits (after WoG disbanding) -- Vig(Apr 17, 2010)
-AE Bits (after vig stopped development)
+AE Bits (after vig stopped development) -- Rick (March 2, 2019)
+
 
 ------May 28th------
 - Fixed the broken links to my site, as well as put a redirecting page (sorry i messed that up)
@@ -42,6 +44,13 @@ AE Bits (after vig stopped development)
 - Changed the added empire menu (when not on the empire tab) to reflect the new prodction tab.
 - Changed the quickbookmarks to allow scrolling. Meaning you can fill it up and the page will expand and allow you to scroll down to see all your links
 - General script clean up and performance enhancing
+
+------March 2, 2019------
+- Ported to Chrome, for TamperMonkey
+- Fixed issues with Fleet on Empier Page
+- Fixed player highlighting based on color
+- Added a check for Anti-Admins
+- Lots of other stuff...
 
 ----------------------
 Disclaimer
@@ -61,7 +70,31 @@ http://www.gnu.org/licenses/.
 
 */
 
+// Anti Admin detection added by Rick
+var canRun = true
+'use strict';
+var href = window.location.href;
+var domain = href.substring(0,href.search('com')+4);
+var detailHtmlInfo = "";
 
+    //Anti-Detection
+    //http://cdn.astroempires.com/javascript/js_jquery_debug_v1.0.js
+    var all_js = document.getElementsByTagName('script');
+    for(i=0; i < all_js.length; i++) {
+        var src = all_js[i].getAttributeNode("src");
+        if(src == null) continue;
+        var value = src.value;
+        //Log(value);
+        if(value.search("js_jquery_debug") > 0 ){
+            //var debugDetection = true 
+            //if(debugDetection){
+            canRun = false
+            alert("Disabled, admins were looking.");
+            return;
+        }
+    }
+
+if (canRun){
 var totalStart = new Date();
 var DEBUGNEWCODE = 0;
 
@@ -301,6 +334,7 @@ var shipShortName = new Array("FT", "BO", "HB", "IB", "CV", "RC", "DE", "FR", "I
 
 //Tech in order, Laser, Missile, Plasma, Ion, Photon, Disruptor, Armour, Shielding
 var shipWeaponTechIndex = new Array(0, 1, 2, 3, 0, 0, 2, 1, 3, 0, 0, 2, 1, 2, 3, 3, 4, 5, 4, 5, 0, 0, 1, 2, 3, 4, 5, 3, 3, 4);
+}
 //==========================================
 // Check if new install
 //==========================================
@@ -1423,7 +1457,7 @@ function hideGoodTRs() {
 //==========================================
 
 function highlightTradePartners(){
-	var color_partners = getSetting(HIGHLIGHT_TRADE_PARTNERS_KEY,true);
+    var color_partners = getSetting(HIGHLIGHT_TRADE_PARTNERS_KEY,true);
     //console.log('Checking trade page');
 
     //if on the main empire page, only check links in the marquee
@@ -1441,27 +1475,27 @@ function highlightTradePartners(){
         null,
         XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
         null);
-	//Iterate through all and add only odd ones to name and node arrays.
-	var highlightPlayers = (getSetting(PLAYER_COLORS_KEY,null) != null) && getSetting(HIGHLIGHT_PLAYERS_KEY,true);
-	for (var i = 0; i < allLinks.snapshotLength; i++) {
-		item = allLinks.snapshotItem(i);
-		if (color_partners && isTradePartner(item.innerHTML)) {
-			item.style.color = unescape(getSetting(HIGHLIGHT_TRADE_COLOUR_KEY));
-		}
-		if(highlightPlayers) {
-			var guild = getGuild(item.innerHTML);
-			//Highlight by guild
-			var color = getHighlightColorForGuild(guild);
-			if(color != null) {
-				item.style.color = color;
-			}
-			//Apply overrides
-			var color = getHighlightColorForPlayer(getPlayerName(item.innerHTML));
-			if(color != null) {
-				item.style.color = color;
-			}
-		}
-	}
+    //Iterate through all and add only odd ones to name and node arrays.
+    var highlightPlayers = (getSetting(PLAYER_COLORS_KEY,null) != null) && getSetting(HIGHLIGHT_PLAYERS_KEY,true);
+    for (var i = 0; i < allLinks.snapshotLength; i++) {
+        item = allLinks.snapshotItem(i);
+        if (color_partners && isTradePartner(item.innerHTML)) {
+            item.style.color = unescape(getSetting(HIGHLIGHT_TRADE_COLOUR_KEY));
+        }
+        if(highlightPlayers) {
+            var guild = getGuild(item.innerHTML);
+            //Highlight by guild
+            var color = getHighlightColorForGuild(guild);
+            if(color != null) {
+                item.style.color = color;
+            }
+            //Apply overrides
+            var color = getHighlightColorForPlayer(getPlayerName(item.innerHTML));
+            if(color != null) {
+                item.style.color = color;
+            }
+        }
+    }
 }
 //profile_context.highlightTradePartners = highlightTradePartners;
 //==========================================
@@ -7431,12 +7465,13 @@ function mkIframe(objct, evt) { // used once
         }
     });
 }
+if (canRun){
 try {
     console.log("Trying CP_AE now.");
     cp_ae_initalisation();
 } catch (e) {
     debug("\n General error: "+e+"\nLine Number: "+e.lineNumber,'error');
     console.log("General error: " +e+ "Line Number: " +e.lineNUmber);
-}
+}}
 var totalEnd = new Date();
 //profile_context.end('aebits global');
