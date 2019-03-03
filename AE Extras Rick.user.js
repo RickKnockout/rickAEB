@@ -378,21 +378,22 @@ function commaFormat(amount) { // 2010-10, used 6 times
     return amount;
 }
 
-// new since 2.4 - thanks to BishopGumby
+
+
 var thousandsFormatter = getSetting(NUMBER_DELIMETER_KEY, ',');
 
 function parseNum(s) { // 2010-10, used 10+
     try {
         s += '';
+        var re = /,/g;
         if (thousandsFormatter == '%2C'){
-            thousandsFormatter = ',';
+            re = /,/g;
         }
         if (thousandsFormatter == '%20'){
-            thousandsFormatter = ' ';
+            re = / /g;
         }
-        while (s.indexOf(thousandsFormatter) != -1){
-            s = s.replace(thousandsFormatter, '');
-        return parseInt(s);}
+        s = s.replace(re,"");
+        return parseInt(s);
     } catch (e) {
         console.log('parseNum(' + s + ') error ' + e);
         return s;
@@ -480,8 +481,8 @@ function getServer() { // 2010-10, used alot
 }
 
 function getGalaxy() { // 2010-10, used 2 times
-    //if (_server == null) var _server = getServer();
-    //return _server.charAt(0).toUpperCase();
+    if (_server == null) var _server = getServer();
+    return _server.charAt(0).toUpperCase();
 }
 
 function getView() {
@@ -680,13 +681,13 @@ function getElementPosition(a) {
 function sumShips(rows) {
     try {
         rows = document.evaluate(
-            "//table[@class='layout listing1 sorttable']/tbody/tr",
+            "//table[@class='layout listing1 tbllisting1 sorttable']/tbody/tr",
             document,
             null,
             XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
             null);
         var header = document.evaluate(
-            "//table[@class='layout listing1 sorttable']/thead/tr",
+            "//table[@class='layout listing1 tbllisting1 sorttable']/thead/tr",
             document,
             null,
             XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
