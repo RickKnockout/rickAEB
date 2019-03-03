@@ -767,7 +767,7 @@ function sumShips(rows) {
             }
             //console.log(rows.snapshotItem(i).lastChild.textContent);
             if (getSetting(SHOW_ATTACK_SIZE_KEY, true))
-                rows.snapshotItem(i).lastChild.textContent = currentFightingFleetTotal + " / " + rows.snapshotItem(i).lastChild.textContent;
+                rows.snapshotItem(i).lastChild.textContent = commaFormat(currentFightingFleetTotal) + " / " + commaFormat(rows.snapshotItem(i).lastChild.textContent);
             fleetUrl = rows.snapshotItem(i).firstChild.firstChild.firstChild.href;
             //console.log("fleeturl "+fleetUrl);
             if (getSetting(ADD_FLEET_MOVE_LINK_KEY, true)) {
@@ -867,7 +867,7 @@ function insertTotalsRow(nodeloc, sums, mobileSums, fleetCount, mobileFleetCount
         //Add totals cell
         cell = document.createElement("td");
         //cell.setAttribute("style","border: #000066 solid 1px; border-width: 0 1 1 1;");
-        cell.innerHTML = galaxyInfoArray[3] + " / " + galaxyInfoArray[4];
+        cell.innerHTML = commaFormat(galaxyInfoArray[3]) + " / " + commaFormat(galaxyInfoArray[4]);
         //console.log(element);
         sumRow.insertBefore(cell, null);
         nodeloc.insertBefore(sumRow, null);
@@ -892,7 +892,7 @@ function insertTotalsRow(nodeloc, sums, mobileSums, fleetCount, mobileFleetCount
     //Add totals cell
     cell = document.createElement("td");
     //cell.setAttribute("style","border: #000066 solid 1px; border-width: 0 1 1 1;");
-    cell.innerHTML = overallMobileFightingFleetTotal + " / " + overallMobileFleetTotal;
+    cell.innerHTML = commaFormat(overallMobileFightingFleetTotal) + " / " + commaFormat(overallMobileFleetTotal);
     //console.log(element);
     sumRow.insertBefore(cell, null);
     nodeloc.insertBefore(sumRow, null);
@@ -916,7 +916,7 @@ function insertTotalsRow(nodeloc, sums, mobileSums, fleetCount, mobileFleetCount
     //Add totals cell
     cell = document.createElement("td");
     //cell.setAttribute("style","border: #000066 solid 1px; border-width: 0 1 1 1;");
-    cell.innerHTML = overallFightingFleetTotal + " / " + overallFleetTotal;
+    cell.innerHTML = commaFormat(overallFightingFleetTotal) + " / " + commaFormat(overallFleetTotal);
     //console.log(element);
     if (getSetting(ADD_FLEET_MOVE_LINK_KEY, true)) cell.setAttribute("colspan", "2");
     sumRow.insertBefore(cell, null);
