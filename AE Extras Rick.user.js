@@ -2514,14 +2514,14 @@ function copyFleetLinks() {
 //==========================================
 //Base Default Presets
 //==========================================
-var DEFAULT_BASE_PRESET_1 = "0,0,0,0,0,0,25,20,20,16,0,20,10,15,10,15,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
-var DEFAULT_BASE_PRESET_2 = "0,0,0,0,0,0,25,0,20,24,5,20,10,15,10,5,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
-var DEFAULT_BASE_PRESET_3 = "0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
-var DEFAULT_BASE_PRESET_4 = "0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,5,0,0,,0,0,0,0,5,0,5,0,5,5";
-var DEFAULT_BASE_PRESET_5 = "0,0,0,0,0,0,25,0,20,16,0,20,20,15,10,5,0,0,0,0,0,0,,0,0,0,0,5,0,5,0,5,5";
-var DEFAULT_BASE_PRESET_6 = "0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
-var DEFAULT_BASE_PRESET_7 = "0,0,0,0,0,0,25,0,20,0,0,0,0,15,10,0,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
-var DEFAULT_BASE_PRESET_8 = "0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,0,0,5,,0,0,0,0,2,0,2,0,2,2";
+var DEFAULT_BASE_PRESET_1 = "0,0,0,0,0,0,0,25,20,20,16,0,20,10,15,10,15,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
+var DEFAULT_BASE_PRESET_2 = "0,0,0,0,0,0,0,25,0,20,24,5,20,10,15,10,5,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
+var DEFAULT_BASE_PRESET_3 = "0,0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
+var DEFAULT_BASE_PRESET_4 = "0,0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,5,0,0,,0,0,0,0,5,0,5,0,5,5";
+var DEFAULT_BASE_PRESET_5 = "0,0,0,0,0,0,0,25,0,20,16,0,20,20,15,10,5,0,0,0,0,0,0,,0,0,0,0,5,0,5,0,5,5";
+var DEFAULT_BASE_PRESET_6 = "0,0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
+var DEFAULT_BASE_PRESET_7 = "0,0,0,0,0,0,0,25,0,20,0,0,0,0,15,10,0,0,0,0,0,0,0,,0,0,0,0,2,0,2,0,2,2";
+var DEFAULT_BASE_PRESET_8 = "0,0,0,0,0,0,0,25,0,20,16,0,20,10,15,10,5,0,0,0,0,0,5,,0,0,0,0,2,0,2,0,2,2";
 var DEFAULT_BASE_PRESET_NAME_1 = "E";
 var DEFAULT_BASE_PRESET_NAME_2 = "P";
 var DEFAULT_BASE_PRESET_NAME_3 = "R";
@@ -2900,7 +2900,7 @@ function fillCells(baseId, type) {
 
 function insertEditRows() {
     var table = document.evaluate(
-        "//table[@class='layout listing1']",
+        "//table[@class='layout listing1 tbllisting1']",
         document,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
@@ -2996,7 +2996,7 @@ function saveNewBaseTypeValues() {
     setSetting(BASE_PRESET_6_TITLE_KEY, rows.snapshotItem(5).childNodes[0].childNodes[2].value);
     setSetting(BASE_PRESET_7_TITLE_KEY, rows.snapshotItem(6).childNodes[0].childNodes[2].value);
     setSetting(BASE_PRESET_8_TITLE_KEY, rows.snapshotItem(7).childNodes[0].childNodes[2].value);
-    console.log(rows[0].childNodes[0].firstChild.value);
+    //console.log(rows[0].childNodes[0].firstChild.value);
     for (var j = 0; j < rows.snapshotLength; j++) {
         var array = new Array();
         var row = rows.snapshotItem(j);
