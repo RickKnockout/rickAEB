@@ -11,6 +11,7 @@
 // @grant window.close
 // @grant window.focus
 // @grant GM_addStyle
+// @grant         GM_xmlhttpRequest
 // @include             http*://*.astroempires.com/*
 // @include             http://www.vig.vg/*
 // @exclude             http*://*.astroempires.com/
@@ -6853,13 +6854,11 @@ function cp_ae_main() {
         // Fleet Info Popup
         //-----------------------------------
         if (getSetting(FLEET_INFO_POPUP, true) && (location.indexOf("fleet.aspx") != -1 || location.indexOf("map.aspx?loc=") != -1 || location.indexOf("view=report.aspx") != -1 || location.indexOf("base.aspx?base=") != -1)) {
-            if (false) {
                 try {
                     fleetInfoPopUp();
                 } catch (e) {
                     console.log("Fleet Info Popup error: " + e)
                 }
-            }
         }
 
         //-----------------------------------
@@ -7336,12 +7335,14 @@ function serverTimeAdjust() {
         var fro = null;
         for (var i = 0; i <= frc; i++) {
             fro = document.getElementById('fleetinfo' + i);
+            if (fro=null){
+                fro = "false"
+            }
             if (fro) {
                 if (getSetting(FLEET_INFO_POPUP_FADE, true)) {
-                    setFading(fro, 100, 20, 200, function() {
-                        document.body.removeChild(fro);
-                    });
-                } else document.body.removeChild(fro);
+                    setFading(fro, 100, 20, 200, function() {});
+                     document.body.removeChild(fro);
+                } else  document.body.removeChild(fro);
             }
         }
     }
@@ -7365,7 +7366,7 @@ function fleetInfoPopUp() {
     var i = 0;
     while (links[i]) {
         if (/fleet.aspx\?fleet=[0-9]{4,}$/.test(links[i].href)) {
-            //links[i].addEventListener('mouseover',mkIframe,false);
+            links[i].addEventListener('mouseover',mkIframe,false);
             links[i].addEventListener('mouseover', startTmr, false);
             links[i].addEventListener('mouseout', stopTmr, false);
 
@@ -7392,15 +7393,18 @@ function tmrTarget() {
 
 
 function killIframes() { // used once
-    var fro = null;
+    var fro = false;
     for (var i = 0; i < frc; i++) {
         fro = document.getElementById('fleetinfo' + i);
+        if (fro!=null){
+        }
+        else {
+            fro = false;
+        }
         if (fro) {
-            //document.body.removeChild(fro);
             if (getSetting(FLEET_INFO_POPUP_FADE, true)) {
-                setFading(fro, 100, 20, 200, function() {
-                    document.body.removeChild(fro);
-                });
+                setFading(fro, 100, 20, 200, function() {});
+                 document.body.removeChild(fro);
             } else {
                 document.body.removeChild(fro);
             }
