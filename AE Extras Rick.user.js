@@ -3,6 +3,7 @@
 // @namespace           http://www.astroempires.com
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
+// @require http://code.jquery.com/jquery-1.7.1.min.js
 // @grant GM_setValue
 // @grant GM_getValue
 // @grant GM_setClipboard
@@ -86,7 +87,7 @@ var detailHtmlInfo = "";
         var value = src.value;
         //Log(value);
         if(value.search("js_jquery_debug") > 0 ){
-            //var debugDetection = true 
+            //var debugDetection = true
             //if(debugDetection){
             canRun = false
             alert("Disabled, admins were looking.");
@@ -555,10 +556,10 @@ function getPageType() { // 2010-10, used once
     else if (location.indexOf('profile.aspx') != -1 && location.indexOf('?player=') == -1) return 'profile';
     else return 'other';
 }
-// Simple replacement of getelementbyid with $ to save typing
-function $(variable) {
+// Simple replacement of getelementbyid with $$ to save typing
+function $$(variable) {
     if (!variable) return;
-    //  console.log("$("+variable+")");
+    //  console.log("$$("+variable+")");
     var node = document.getElementById(variable);
     if (node) return node;
 }
@@ -571,9 +572,9 @@ function $(variable) {
 var notifycount = 1;
 
 function notify(m, c) {
-    if ($('Message')) {
+    if ($$('Message')) {
         //        console.log("Removing old notify: "+document.body.firstChild.innerHTML);
-        document.body.removeChild($('Message'));
+        document.body.removeChild($$('Message'));
     }
     //    var msg = "New notify: "+m
     //    if(c != null) msg = msg+" Type: "+c;
@@ -683,8 +684,8 @@ function insertNotification(message) {
         close.setAttribute('id', 'gm_update_alert_button_close');
         close.innerHTML = "Click to hide";
         close.addEventListener('click', function(event) {
-            document.body.removeChild($('gm_update_alert'));
-            document.body.removeChild($('gm_update_alert_button_close'));
+            document.body.removeChild($$('gm_update_alert'));
+            document.body.removeChild($$('gm_update_alert_button_close'));
         }, true);
         notification.innerHTML = '' +
             '  <div id="gm_update_title">AE Bits Notification</div>' +
@@ -1201,15 +1202,15 @@ function checkGuildDataAge() {
             '  </span><span id="gm_update_alert_button_disable"><a href="#">Disable autoset</a>' +
             '  </span> </div>' +
             '</div>');
-        $('gm_update_alert_button_disable').addEventListener('click', function(event) {
+        $$('gm_update_alert_button_disable').addEventListener('click', function(event) {
             setSetting(AUTOSET_GUILD_KEY, false);
             alert("You will not be reminded again. You can re-enable autoset guild in options.");
-            document.body.removeChild($('gm_update_alert'));
+            document.body.removeChild($$('gm_update_alert'));
         }, true);
-        $('gm_update_alert_button_unguilded').addEventListener('click', function(event) {
+        $$('gm_update_alert_button_unguilded').addEventListener('click', function(event) {
             setSetting(AUTOSET_GUILD_NOTIFY_KEY, false);
             alert("You will not be reminded again. You can re-enable autoset guild notify in options.");
-            document.body.removeChild($('gm_update_alert'));
+            document.body.removeChild($$('gm_update_alert'));
         }, true);
         return;
     }
@@ -1225,10 +1226,10 @@ function checkGuildDataAge() {
             '      <span id="gm_update_alert_button_unguilded"><a href="#">Don&#39;t remind me again' +
             '  / I am not guilded</a></span> </div>' +
             '</div>');
-        $('gm_update_alert_button_unguilded').addEventListener('click', function(event) {
+        $$('gm_update_alert_button_unguilded').addEventListener('click', function(event) {
             setSetting(AUTOSET_GUILD_KEY, false);
             alert("You will not be reminded again. You can re-enable autoset guild in options.");
-            document.body.removeChild($('gm_update_alert'));
+            document.body.removeChild($$('gm_update_alert'));
         }, true);
         return;
     }
@@ -1435,17 +1436,17 @@ function insertCollapsTradeLink() {
 
     tradeTable.parentNode.insertBefore(center, tradeTable);
 
-    $('hideShowGoodTR').addEventListener("click", function() {
+    $$('hideShowGoodTR').addEventListener("click", function() {
         hideGoodTRs();
     }, true);
 }
 
 function hideGoodTRs() {
-    if ($('hideShowGoodTR').innerHTML == "Show Good Trade Routes") {
-        $('hideShowGoodTR').innerHTML = "Hide Good Trade Routes";
+    if ($$('hideShowGoodTR').innerHTML == "Show Good Trade Routes") {
+        $$('hideShowGoodTR').innerHTML = "Hide Good Trade Routes";
         hideGoodTR = false;
     } else {
-        $('hideShowGoodTR').innerHTML = "Show Good Trade Routes";
+        $$('hideShowGoodTR').innerHTML = "Show Good Trade Routes";
         hideGoodTR = true;
     }
     setSetting("HIDE_GOOD_TRS", hideGoodTR);
@@ -1525,19 +1526,19 @@ function insertProductionPresetsButtons() {
     if (table.childNodes.length > 1)
         table = table.firstChild;
     table.appendChild(buttonElement, table);
-    $('presetButton1').addEventListener('click', function(event) {
+    $$('presetButton1').addEventListener('click', function(event) {
         applyProductionPreset(1);
     }, true);
-    $('presetButton2').addEventListener('click', function(event) {
+    $$('presetButton2').addEventListener('click', function(event) {
         applyProductionPreset(2);
     }, true);
-    $('presetButton3').addEventListener('click', function(event) {
+    $$('presetButton3').addEventListener('click', function(event) {
         applyProductionPreset(3);
     }, true);
-    $('presetButton4').addEventListener('click', function(event) {
+    $$('presetButton4').addEventListener('click', function(event) {
         applyProductionPreset(4);
     }, true);
-    $('fillHangars').addEventListener('click', function(event) {
+    $$('fillHangars').addEventListener('click', function(event) {
         queueFullHangarSpace();
     }, true);
     //Insert Set Preset Buttons
@@ -1557,16 +1558,16 @@ function insertProductionPresetsButtons() {
     var Button = document.evaluate("//input[@type='reset']",
         document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
     Button.parentNode.insertBefore(buttonElement, Button);
-    $('setButton1').addEventListener('click', function(event) {
+    $$('setButton1').addEventListener('click', function(event) {
         saveProductionPreset(1);
     }, true);
-    $('setButton2').addEventListener('click', function(event) {
+    $$('setButton2').addEventListener('click', function(event) {
         saveProductionPreset(2);
     }, true);
-    $('setButton3').addEventListener('click', function(event) {
+    $$('setButton3').addEventListener('click', function(event) {
         saveProductionPreset(3);
     }, true);
-    $('setButton4').addEventListener('click', function(event) {
+    $$('setButton4').addEventListener('click', function(event) {
         saveProductionPreset(4);
     }, true);
     //profile_context.end('insertProductionPresetsButtons');
@@ -1706,22 +1707,22 @@ function saveProductionPreset(preset) {
         switch (preset) {
             case 1:
                 {
-                    setSetting(PRESET_1_VALUE_KEY, presetArray.join());setSetting(PRESET_1_NAME_KEY, name);$('presetButton1').firstChild.innerHTML = name;
+                    setSetting(PRESET_1_VALUE_KEY, presetArray.join());setSetting(PRESET_1_NAME_KEY, name);$$('presetButton1').firstChild.innerHTML = name;
                     break;
                 }
             case 2:
                 {
-                    setSetting(PRESET_2_VALUE_KEY, presetArray.join());setSetting(PRESET_2_NAME_KEY, name);$('presetButton2').firstChild.innerHTML = name;
+                    setSetting(PRESET_2_VALUE_KEY, presetArray.join());setSetting(PRESET_2_NAME_KEY, name);$$('presetButton2').firstChild.innerHTML = name;
                     break;
                 }
             case 3:
                 {
-                    setSetting(PRESET_3_VALUE_KEY, presetArray.join());setSetting(PRESET_3_NAME_KEY, name);$('presetButton3').firstChild.innerHTML = name;
+                    setSetting(PRESET_3_VALUE_KEY, presetArray.join());setSetting(PRESET_3_NAME_KEY, name);$$('presetButton3').firstChild.innerHTML = name;
                     break;
                 }
             case 4:
                 {
-                    setSetting(PRESET_4_VALUE_KEY, presetArray.join());setSetting(PRESET_4_NAME_KEY, name);$('presetButton4').firstChild.innerHTML = name;
+                    setSetting(PRESET_4_VALUE_KEY, presetArray.join());setSetting(PRESET_4_NAME_KEY, name);$$('presetButton4').firstChild.innerHTML = name;
                     break;
                 }
         }
@@ -1905,10 +1906,10 @@ function getTimeDisplay(seconds) {
 // Minor func for config page
 //==========================================
 function poorTradesChanged() {
-    var isChecked = $('config_highlightPoorTrades').checked;
+    var isChecked = $$('config_highlightPoorTrades').checked;
     //console.log("Poor trades changed." + isChecked);
-    $('config_poorTradeUpperThreshold').disabled = !isChecked;
-    $('config_poorTradeLowerThreshold').disabled = !isChecked;
+    $$('config_poorTradeUpperThreshold').disabled = !isChecked;
+    $$('config_poorTradeLowerThreshold').disabled = !isChecked;
 }
 
 //==========================================
@@ -2003,7 +2004,7 @@ function insertCpLogo() {
 //==========================================
 function insertBattleCalcLink() {
     console.log("inserting bcalc...");
-    var bookmarkLink = $("bookmarks");
+    var bookmarkLink = $$("bookmarks");
     if (!bookmarkLink) return;
     var th = document.createElement("th");
     th.setAttribute("width", "11%");
@@ -2015,24 +2016,24 @@ function insertBattleCalcLink() {
         } else {
             th.innerHTML = "<td class='menu-item' style='width: 11%;'><table id='notes' class='button button-normal' onmouseout='buttonOut(this)' onmouseover='buttonOver(this, \"button button-normal-over\")'><tr><td class='button-left'></td><td class='button-center'><a href='" + calc_link + "' target='_new'>Battle Calc</a></td><td class='button-right'></td></tr></table></td>";
         }
-        $("base").parentNode.setAttribute("style", "width: 11%;");
-        $("map").parentNode.setAttribute("style", "width: 11%;");
-        $("fleet").parentNode.setAttribute("style", "width: 11%;");
-        $("empire").parentNode.setAttribute("style", "width: 11%;");
-        $("commmander").parentNode.setAttribute("style", "width: 11%;");
-        $("guild").parentNode.setAttribute("style", "width: 11%;");
-        $("notes").parentNode.setAttribute("style", "width: 11%;");
-        $("bookmarks").parentNode.setAttribute("style", "width: 11%;");
+        $$("base").parentNode.setAttribute("style", "width: 11%;");
+        $$("map").parentNode.setAttribute("style", "width: 11%;");
+        $$("fleet").parentNode.setAttribute("style", "width: 11%;");
+        $$("empire").parentNode.setAttribute("style", "width: 11%;");
+        $$("commmander").parentNode.setAttribute("style", "width: 11%;");
+        $$("guild").parentNode.setAttribute("style", "width: 11%;");
+        $$("notes").parentNode.setAttribute("style", "width: 11%;");
+        $$("bookmarks").parentNode.setAttribute("style", "width: 11%;");
         bookmarkLink.parentNode.parentNode.insertBefore(th, bookmarkLink.parentNode);
     } else {
-        $("base").setAttribute("width", "11%");
-        $("map").setAttribute("width", "11%");
-        $("fleet").setAttribute("width", "11%");
-        $("empire").setAttribute("width", "11%");
-        $("commander").setAttribute("width", "12%");
-        $("guild").setAttribute("width", "11%");
-        $("notes").setAttribute("width", "11%");
-        $("bookmarks").setAttribute("width", "11%");
+        $$("base").setAttribute("width", "11%");
+        $$("map").setAttribute("width", "11%");
+        $$("fleet").setAttribute("width", "11%");
+        $$("empire").setAttribute("width", "11%");
+        $$("commander").setAttribute("width", "12%");
+        $$("guild").setAttribute("width", "11%");
+        $$("notes").setAttribute("width", "11%");
+        $$("bookmarks").setAttribute("width", "11%");
         bookmarkLink.parentNode.insertBefore(th, bookmarkLink);
     }
 
@@ -2388,7 +2389,7 @@ function insertFleetSummary()
     //console.log("registering events");
      for(i=0;i<fleetData.length;i++)
     {
-         var link = $("showHide"+fleetData[i][0]);
+         var link = $$("showHide"+fleetData[i][0]);
          link.addEventListener('click',getShowHideFleetClosure(fleetData[i][0]),true);
         //console.log(link);
         //console.log(getShowHideFleetClosure(fleetData[i][0]));
@@ -2418,7 +2419,7 @@ function toggleFleetVisibility(guild)
          row.style.display = (row.style.display=="none")? "":"none";
          row.style.visibility = (row.style.visibility=="hidden")? "":"hidden";
     }
-     var link = $("showHide"+guild);
+     var link = $$("showHide"+guild);
      link.textContent= (link.textContent=="Show")? "Hide":"Show";
     //document.body.scrollTop += 200;
 }
@@ -2434,7 +2435,7 @@ function moveGalaxyList() {
         if (cE.firstChild.nodeName == "SMALL") {
             cE.parentNode.appendChild(cE);
             cE.parentNode.insertBefore(document.createElement("br"), cE);
-            var linksElement = $("linksClones");
+            var linksElement = $$("linksClones");
             if (linksElement) cE.setAttribute("style", "position: relative; bottom: " + linksElement.offsetHeight);
         }
     }
@@ -2672,7 +2673,7 @@ function insertBaseSettingLinks() {
             "<a class='settingsLink' href='#" + baseId + "' id='8-" + baseId + "' title='" + preset8Title + "'>" + preset8Name + "</a>";
         settingsTd.innerHTML = html;
         row.insertBefore(settingsTd, row.firstChild);
-        //console.log($("E"+baseId));
+        //console.log($$("E"+baseId));
         var baseType = getBaseType(baseId);
         //console.log("Base Type: "+baseType);
 
@@ -2682,14 +2683,14 @@ function insertBaseSettingLinks() {
         if (baseType)
             onBaseTypeSet(baseId, baseType);
 
-        $("1-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "1"), true);
-        $("2-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "2"), true);
-        $("3-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "3"), true);
-        $("4-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "4"), true);
-        $("5-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "5"), true);
-        $("6-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "6"), true);
-        $("7-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "7"), true);
-        $("8-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "8"), true);
+        $$("1-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "1"), true);
+        $$("2-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "2"), true);
+        $$("3-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "3"), true);
+        $$("4-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "4"), true);
+        $$("5-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "5"), true);
+        $$("6-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "6"), true);
+        $$("7-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "7"), true);
+        $$("8-" + baseId).addEventListener('click', getSetBaseClosure(baseId, "8"), true);
     }
 }
 
@@ -2830,15 +2831,15 @@ function saveBaseTypeValues(array, type) {
 
 function onBaseTypeSet(baseId, type) {
     //console.log(type+"-"+baseId);
-    if ($(type + "-" + baseId).getAttribute("class") == "settingsLinkSelected") {
+    if ($$(type + "-" + baseId).getAttribute("class") == "settingsLinkSelected") {
         //Clear
-        $(type + "-" + baseId).setAttribute("class", "settingsLink");
+        $$(type + "-" + baseId).setAttribute("class", "settingsLink");
         fillCells(baseId, "clear");
     } else {
         //apply
-        $(type + "-" + baseId).setAttribute("class", "settingsLinkSelected");
+        $$(type + "-" + baseId).setAttribute("class", "settingsLinkSelected");
         for (i = 1; i <= 8; i++) {
-            if (i != type) $(i + "-" + baseId).setAttribute("class", "settingsLink");
+            if (i != type) $$(i + "-" + baseId).setAttribute("class", "settingsLink");
         }
         //console.log(baseId);
         fillCells(baseId, type);
@@ -3232,6 +3233,9 @@ function sumSingleFleet() {
         totalSize = 0;
     do {
         result = regex.exec(source);
+        if (result==null){
+            result="";
+        }
         if (result) {
             console.log(result[2]);
             var shipName = result[1];
@@ -3245,19 +3249,19 @@ function sumSingleFleet() {
     }
     while (result)
     var table = document.evaluate(
-        "//table[ @class='layout listing']",
+        "//table[ @class='layout listing btnlisting tbllisting1']",
         document,
         null,
         XPathResult.FIRST_ORDERED_NODE_TYPE,
         null).singleNodeValue;
-    console.log(rows);
-    if (!table)
+    if (!table){
         return;
+    }
     table = table.firstChild;
     console.log(table);
 
-    table.innerHTML = table.innerHTML + "<tr><td><b>Fighting Size</b></td><td align='center'>" + fightingSize + "</td></tr>" +
-        "<tr><td><b>Total Size</b></td><td align='center'>" + totalSize + "</td></tr>";
+    table.innerHTML = table.innerHTML + "<span id='fightingsize'><tr><td><b>Fighting Size</b></td><td align='center'>" + fightingSize + "</td></tr></span>" +
+        "<span id='totalsize'><tr><td><b>Total Size</b></td><td align='center'>" + totalSize + "</td></tr></span>";
 
 }
 
@@ -3265,9 +3269,9 @@ function sumSingleFleet() {
 //Sum Credits Page
 //==========================================
 function sumCreditsPage() {
-    var mainTable = $("credits_table");
+    var mainTable = $$("credits_table");
     var parent;
-    var summary = $("credits_table_sumary");
+    var summary = $$("credits_table_sumary");
 
     if (mainTable && summary) {
         parent = mainTable.parentNode;
@@ -3446,8 +3450,8 @@ function getCurrentServerTime() { // 2010-10, used 7 times
             var container = 'pageDate';
             if (isNewStyle())
                 container = 'top-header_server-time';
-            if (!$(container)) return;
-            var pageDate = $(container);
+            if (!$$(container)) return;
+            var pageDate = $$(container);
             var timerDateObject = new Date();
             var time = parseNum(pageDate.title);
             if (!time) return;
@@ -4037,9 +4041,9 @@ function configBody(tab) {
 function showConfig(page) {
     console.log("Loading config for "+getServer());
     if (DEBUGNEWCODE) {
-        if ($('Config')) {
+        if ($$('Config')) {
             //console.log("Removing old notify: "+document.body.firstChild.innerHTML);
-            document.body.removeChild($('Config'));
+            document.body.removeChild($$('Config'));
         }
         //  create a block element
         var b = document.createElement('div');
@@ -4075,13 +4079,13 @@ function showConfig(page) {
         document.body.innerHTML = "<html><body>" + configBody(page) + "</body></html>";
     }
     loadConfig();
-    $('saveButton').addEventListener('click', function(event) {
+    $$('saveButton').addEventListener('click', function(event) {
         saveConfig();
     }, true);
-    $('resetButton').addEventListener('click', function(event) {
+    $$('resetButton').addEventListener('click', function(event) {
         resetConfig();
     }, true);
-    $('config_highlightPoorTrades').addEventListener('change', function(event) {
+    $$('config_highlightPoorTrades').addEventListener('change', function(event) {
         poorTradesChanged();
     }, true);
 
@@ -4107,67 +4111,67 @@ function saveConfig() {
         setSetting(QUICK_BAR_FIX, document.getElementById(QUICK_BAR_FIX).checked);
         setSetting(HIDE_ALLI_FLEETS, document.getElementById(HIDE_ALLI_FLEETS).checked);
 
-        setSetting(HIGHLIGHT_TRADE_PARTNERS_KEY, $(HIGHLIGHT_TRADE_PARTNERS_KEY).checked);
-        setSetting(HIGHLIGHT_POOR_TRADES_KEY, $(HIGHLIGHT_POOR_TRADES_KEY).checked);
-        setSetting(POOR_TRADE_UPPER_THRESHOLD_KEY, $(POOR_TRADE_UPPER_THRESHOLD_KEY).value);
-        setSetting(POOR_TRADE_LOWER_THRESHOLD_KEY, $(POOR_TRADE_LOWER_THRESHOLD_KEY).value);
-        setSetting(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY, $(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY).checked);
-        setSetting(SHOW_TOTAL_FLEET_ROW_KEY, $(SHOW_TOTAL_FLEET_ROW_KEY).checked);
-        setSetting(SHOW_ATTACK_SIZE_KEY, $(SHOW_ATTACK_SIZE_KEY).checked);
-        setSetting(ADD_FLEET_MOVE_LINK_KEY, $(ADD_FLEET_MOVE_LINK_KEY).checked);
-        setSetting(ENABLE_PRODUCTION_PRESETS_KEY, $(ENABLE_PRODUCTION_PRESETS_KEY).checked);
-        setSetting(ADD_EMPIRE_SUBMENU_KEY, $(ADD_EMPIRE_SUBMENU_KEY).checked);
-        setSetting(MOVE_EMPIRE_SUBMENU_KEY, $(MOVE_EMPIRE_SUBMENU_KEY).checked);
-        setSetting(INSERT_BATTLECALC_LINK_KEY, $(INSERT_BATTLECALC_LINK_KEY).checked);
-        setSetting(ADJUST_TITLES_KEY, $(ADJUST_TITLES_KEY).checked);
-        setSetting(FIX_QUEUES_KEY, $(FIX_QUEUES_KEY).checked);
-        setSetting(MAX_QUEUES_KEY, $(MAX_QUEUES_KEY).value);
-        setSetting(HIGHLIGHT_PLAYERS_KEY, $(HIGHLIGHT_PLAYERS_KEY).checked);
-        setSetting(PLAYER_COLORS_KEY, escape($(PLAYER_COLORS_KEY).value));
-        setSetting(MY_GUILD_KEY, escape($(MY_GUILD_KEY).value));
+        setSetting(HIGHLIGHT_TRADE_PARTNERS_KEY, $$(HIGHLIGHT_TRADE_PARTNERS_KEY).checked);
+        setSetting(HIGHLIGHT_POOR_TRADES_KEY, $$(HIGHLIGHT_POOR_TRADES_KEY).checked);
+        setSetting(POOR_TRADE_UPPER_THRESHOLD_KEY, $$(POOR_TRADE_UPPER_THRESHOLD_KEY).value);
+        setSetting(POOR_TRADE_LOWER_THRESHOLD_KEY, $$(POOR_TRADE_LOWER_THRESHOLD_KEY).value);
+        setSetting(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY, $$(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY).checked);
+        setSetting(SHOW_TOTAL_FLEET_ROW_KEY, $$(SHOW_TOTAL_FLEET_ROW_KEY).checked);
+        setSetting(SHOW_ATTACK_SIZE_KEY, $$(SHOW_ATTACK_SIZE_KEY).checked);
+        setSetting(ADD_FLEET_MOVE_LINK_KEY, $$(ADD_FLEET_MOVE_LINK_KEY).checked);
+        setSetting(ENABLE_PRODUCTION_PRESETS_KEY, $$(ENABLE_PRODUCTION_PRESETS_KEY).checked);
+        setSetting(ADD_EMPIRE_SUBMENU_KEY, $$(ADD_EMPIRE_SUBMENU_KEY).checked);
+        setSetting(MOVE_EMPIRE_SUBMENU_KEY, $$(MOVE_EMPIRE_SUBMENU_KEY).checked);
+        setSetting(INSERT_BATTLECALC_LINK_KEY, $$(INSERT_BATTLECALC_LINK_KEY).checked);
+        setSetting(ADJUST_TITLES_KEY, $$(ADJUST_TITLES_KEY).checked);
+        setSetting(FIX_QUEUES_KEY, $$(FIX_QUEUES_KEY).checked);
+        setSetting(MAX_QUEUES_KEY, $$(MAX_QUEUES_KEY).value);
+        setSetting(HIGHLIGHT_PLAYERS_KEY, $$(HIGHLIGHT_PLAYERS_KEY).checked);
+        setSetting(PLAYER_COLORS_KEY, escape($$(PLAYER_COLORS_KEY).value));
+        setSetting(MY_GUILD_KEY, escape($$(MY_GUILD_KEY).value));
         setSetting(MY_NAME_KEY, escape(document.getElementById(MY_NAME_KEY).value));
-        setSetting(ALLIED_GUILDS_KEY, escape($(ALLIED_GUILDS_KEY).value));
-        setSetting(NAPPED_GUILDS_KEY, escape($(NAPPED_GUILDS_KEY).value));
-        setSetting(ENEMY_GUILDS_KEY, escape($(ENEMY_GUILDS_KEY).value));
-        setSetting(MY_GUILD_COLOUR_KEY, escape($(MY_GUILD_COLOUR_KEY).value));
-        setSetting(ENEMY_GUILDS_COLOUR_KEY, escape($(ENEMY_GUILDS_COLOUR_KEY).value));
-        setSetting(NAPPED_GUILDS_COLOUR_KEY, escape($(NAPPED_GUILDS_COLOUR_KEY).value));
-        setSetting(ALLIED_GUILDS_COLOUR_KEY, escape($(ALLIED_GUILDS_COLOUR_KEY).value));
-        setSetting(HIGHLIGHT_TRADE_COLOUR_KEY, escape($(HIGHLIGHT_TRADE_COLOUR_KEY).value));
-        setSetting(HIGHLIGHT_BASE_COLOUR_KEY, escape($(HIGHLIGHT_BASE_COLOUR_KEY).value));
-        setSetting(HIGHLIGHT_SYSTEM_COLOUR_KEY, escape($(HIGHLIGHT_SYSTEM_COLOUR_KEY).value));
-        setSetting(HIGHLIGHT_CUS_SCANNER_KEY, escape($(HIGHLIGHT_CUS_SCANNER_KEY).value));
-        setSetting(HIGHLIGHT_CUSBASE_COLOUR_KEY, escape($(HIGHLIGHT_CUSBASE_COLOUR_KEY).value));
-        setSetting(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY, escape($(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY).value));
-        setSetting(STRUCT_COLOUR1_KEY, escape($(STRUCT_COLOUR1_KEY).value));
-        setSetting(STRUCT_COLOUR2_KEY, escape($(STRUCT_COLOUR2_KEY).value));
-        setSetting(STRUCT_COLOUR3_KEY, escape($(STRUCT_COLOUR3_KEY).value));
-        setSetting(SUM_FLEETS_KEY, $(SUM_FLEETS_KEY).checked);
-        setSetting(SUM_FLEETS_BASE, $(SUM_FLEETS_BASE).checked);
-        setSetting(FLEET_INFO_POPUP, $(FLEET_INFO_POPUP).checked);
-        setSetting(FLEET_INFO_POPUP_TIMER, $(FLEET_INFO_POPUP_TIMER).value);
-        setSetting(FLEET_INFO_POPUP_FADE, $(FLEET_INFO_POPUP_FADE).checked);
-        setSetting(SUM_CREDITS_KEY, $(SUM_CREDITS_KEY).checked);
-        setSetting(FORMAT_NUMBERS_KEY, $(FORMAT_NUMBERS_KEY).checked);
-        setSetting(NUMBER_DELIMETER_KEY, escape($(NUMBER_DELIMETER_KEY).value));
-        setSetting(CLONE_BASE_LINKS_KEY, $(CLONE_BASE_LINKS_KEY).checked);
-        setSetting(CLONE_FLEET_LINKS_KEY, $(CLONE_FLEET_LINKS_KEY).checked);
-        setSetting(MOVE_GALAXY_LINKS_KEY, $(MOVE_GALAXY_LINKS_KEY).checked);
-        setSetting(STRUCTURES_GOALS_KEY, $(STRUCTURES_GOALS_KEY).checked);
-        setSetting(INSERT_MOVE_PRESETS_KEY, $(INSERT_MOVE_PRESETS_KEY).checked);
-        setSetting(SHOW_EXECUTION_TIME_KEY, $(SHOW_EXECUTION_TIME_KEY).checked);
-        setSetting(AUTOSET_GUILD_KEY, $(AUTOSET_GUILD_KEY).checked);
-        setSetting(CONSTRUCT_ENHANCE_KEY, $(CONSTRUCT_ENHANCE_KEY).checked);
-        setSetting(SCRIPT_BATTLECALC_KEY, $(SCRIPT_BATTLECALC_KEY).checked);
-        setSetting(AUTOSET_GUILD_NOTIFY_KEY, $(AUTOSET_GUILD_NOTIFY_KEY).checked);
+        setSetting(ALLIED_GUILDS_KEY, escape($$(ALLIED_GUILDS_KEY).value));
+        setSetting(NAPPED_GUILDS_KEY, escape($$(NAPPED_GUILDS_KEY).value));
+        setSetting(ENEMY_GUILDS_KEY, escape($$(ENEMY_GUILDS_KEY).value));
+        setSetting(MY_GUILD_COLOUR_KEY, escape($$(MY_GUILD_COLOUR_KEY).value));
+        setSetting(ENEMY_GUILDS_COLOUR_KEY, escape($$(ENEMY_GUILDS_COLOUR_KEY).value));
+        setSetting(NAPPED_GUILDS_COLOUR_KEY, escape($$(NAPPED_GUILDS_COLOUR_KEY).value));
+        setSetting(ALLIED_GUILDS_COLOUR_KEY, escape($$(ALLIED_GUILDS_COLOUR_KEY).value));
+        setSetting(HIGHLIGHT_TRADE_COLOUR_KEY, escape($$(HIGHLIGHT_TRADE_COLOUR_KEY).value));
+        setSetting(HIGHLIGHT_BASE_COLOUR_KEY, escape($$(HIGHLIGHT_BASE_COLOUR_KEY).value));
+        setSetting(HIGHLIGHT_SYSTEM_COLOUR_KEY, escape($$(HIGHLIGHT_SYSTEM_COLOUR_KEY).value));
+        setSetting(HIGHLIGHT_CUS_SCANNER_KEY, escape($$(HIGHLIGHT_CUS_SCANNER_KEY).value));
+        setSetting(HIGHLIGHT_CUSBASE_COLOUR_KEY, escape($$(HIGHLIGHT_CUSBASE_COLOUR_KEY).value));
+        setSetting(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY, escape($$(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY).value));
+        setSetting(STRUCT_COLOUR1_KEY, escape($$(STRUCT_COLOUR1_KEY).value));
+        setSetting(STRUCT_COLOUR2_KEY, escape($$(STRUCT_COLOUR2_KEY).value));
+        setSetting(STRUCT_COLOUR3_KEY, escape($$(STRUCT_COLOUR3_KEY).value));
+        setSetting(SUM_FLEETS_KEY, $$(SUM_FLEETS_KEY).checked);
+        setSetting(SUM_FLEETS_BASE, $$(SUM_FLEETS_BASE).checked);
+        setSetting(FLEET_INFO_POPUP, $$(FLEET_INFO_POPUP).checked);
+        setSetting(FLEET_INFO_POPUP_TIMER, $$(FLEET_INFO_POPUP_TIMER).value);
+        setSetting(FLEET_INFO_POPUP_FADE, $$(FLEET_INFO_POPUP_FADE).checked);
+        setSetting(SUM_CREDITS_KEY, $$(SUM_CREDITS_KEY).checked);
+        setSetting(FORMAT_NUMBERS_KEY, $$(FORMAT_NUMBERS_KEY).checked);
+        setSetting(NUMBER_DELIMETER_KEY, escape($$(NUMBER_DELIMETER_KEY).value));
+        setSetting(CLONE_BASE_LINKS_KEY, $$(CLONE_BASE_LINKS_KEY).checked);
+        setSetting(CLONE_FLEET_LINKS_KEY, $$(CLONE_FLEET_LINKS_KEY).checked);
+        setSetting(MOVE_GALAXY_LINKS_KEY, $$(MOVE_GALAXY_LINKS_KEY).checked);
+        setSetting(STRUCTURES_GOALS_KEY, $$(STRUCTURES_GOALS_KEY).checked);
+        setSetting(INSERT_MOVE_PRESETS_KEY, $$(INSERT_MOVE_PRESETS_KEY).checked);
+        setSetting(SHOW_EXECUTION_TIME_KEY, $$(SHOW_EXECUTION_TIME_KEY).checked);
+        setSetting(AUTOSET_GUILD_KEY, $$(AUTOSET_GUILD_KEY).checked);
+        setSetting(CONSTRUCT_ENHANCE_KEY, $$(CONSTRUCT_ENHANCE_KEY).checked);
+        setSetting(SCRIPT_BATTLECALC_KEY, $$(SCRIPT_BATTLECALC_KEY).checked);
+        setSetting(AUTOSET_GUILD_NOTIFY_KEY, $$(AUTOSET_GUILD_NOTIFY_KEY).checked);
 
-        setSetting(NAME_LOCATIONS_KEY, $(NAME_LOCATIONS_KEY).checked);
-        setSetting(LOCATION_NAMES_KEY, escape($(LOCATION_NAMES_KEY).value));
+        setSetting(NAME_LOCATIONS_KEY, $$(NAME_LOCATIONS_KEY).checked);
+        setSetting(LOCATION_NAMES_KEY, escape($$(LOCATION_NAMES_KEY).value));
 
-        setSetting(SHOW_PILLAGE_KEY, $(SHOW_PILLAGE_KEY).checked);
-        setSetting(FORMAT_SCANNER_KEY, $(FORMAT_SCANNER_KEY).checked);
-        setSetting(REMOVE_REDIRECT_KEY, $(REMOVE_REDIRECT_KEY).checked);
-        setSetting(DEBUG_KEY, $(DEBUG_KEY).checked);
+        setSetting(SHOW_PILLAGE_KEY, $$(SHOW_PILLAGE_KEY).checked);
+        setSetting(FORMAT_SCANNER_KEY, $$(FORMAT_SCANNER_KEY).checked);
+        setSetting(REMOVE_REDIRECT_KEY, $$(REMOVE_REDIRECT_KEY).checked);
+        setSetting(DEBUG_KEY, $$(DEBUG_KEY).checked);
 
         var logLevel = LOG_LEVEL_WARN;
         var radioButtons = document.evaluate(
@@ -4207,68 +4211,68 @@ function loadConfig() {
         document.getElementById(HIDE_ALLI_FLEETS).checked = getSetting(HIDE_ALLI_FLEETS, true);
 
         console.log("Loading config");
-        if ($(HIGHLIGHT_TRADE_PARTNERS_KEY)) $(HIGHLIGHT_TRADE_PARTNERS_KEY).checked = getSetting(HIGHLIGHT_TRADE_PARTNERS_KEY, true);
-        if ($(HIGHLIGHT_POOR_TRADES_KEY)) $(HIGHLIGHT_POOR_TRADES_KEY).checked = getSetting(HIGHLIGHT_POOR_TRADES_KEY, true);
-        if ($(POOR_TRADE_UPPER_THRESHOLD_KEY)) $(POOR_TRADE_UPPER_THRESHOLD_KEY).value = getSetting(POOR_TRADE_UPPER_THRESHOLD_KEY, 10);
-        if ($(POOR_TRADE_LOWER_THRESHOLD_KEY)) $(POOR_TRADE_LOWER_THRESHOLD_KEY).value = getSetting(POOR_TRADE_LOWER_THRESHOLD_KEY, 10);
-        if ($(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY)) $(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY).checked = getSetting(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY, true);
-        if ($(SHOW_TOTAL_FLEET_ROW_KEY)) $(SHOW_TOTAL_FLEET_ROW_KEY).checked = getSetting(SHOW_TOTAL_FLEET_ROW_KEY, true);
-        if ($(SHOW_ATTACK_SIZE_KEY)) $(SHOW_ATTACK_SIZE_KEY).checked = getSetting(SHOW_ATTACK_SIZE_KEY, true);
-        if ($(ADD_FLEET_MOVE_LINK_KEY)) $(ADD_FLEET_MOVE_LINK_KEY).checked = getSetting(ADD_FLEET_MOVE_LINK_KEY, true);
-        if ($(ENABLE_PRODUCTION_PRESETS_KEY)) $(ENABLE_PRODUCTION_PRESETS_KEY).checked = getSetting(ENABLE_PRODUCTION_PRESETS_KEY, true);
-        if ($(ADD_EMPIRE_SUBMENU_KEY)) $(ADD_EMPIRE_SUBMENU_KEY).checked = getSetting(ADD_EMPIRE_SUBMENU_KEY, true);
-        if ($(MOVE_EMPIRE_SUBMENU_KEY)) $(MOVE_EMPIRE_SUBMENU_KEY).checked = getSetting(MOVE_EMPIRE_SUBMENU_KEY, true);
-        if ($(INSERT_BATTLECALC_LINK_KEY)) $(INSERT_BATTLECALC_LINK_KEY).checked = getSetting(INSERT_BATTLECALC_LINK_KEY, true);
-        if ($(ADJUST_TITLES_KEY)) $(ADJUST_TITLES_KEY).checked = getSetting(ADJUST_TITLES_KEY, true);
-        if ($(FIX_QUEUES_KEY)) $(FIX_QUEUES_KEY).checked = getSetting(FIX_QUEUES_KEY, true);
-        if ($(MAX_QUEUES_KEY)) $(MAX_QUEUES_KEY).value = getSetting(MAX_QUEUES_KEY, 5);
-        if ($(HIGHLIGHT_PLAYERS_KEY)) $(HIGHLIGHT_PLAYERS_KEY).checked = getSetting(HIGHLIGHT_PLAYERS_KEY, true);
-        if ($(PLAYER_COLORS_KEY)) $(PLAYER_COLORS_KEY).value = unescape(getSetting(PLAYER_COLORS_KEY, "Drekons=#FF82AB,United Colonies=#7FFF00"));
-        if ($(MY_GUILD_KEY)) $(MY_GUILD_KEY).value = unescape(getSetting(MY_GUILD_KEY, "[MyGuild]"));
-        if ($(MY_GUILD_COLOUR_KEY)) $(MY_GUILD_COLOUR_KEY).value = unescape(getSetting(MY_GUILD_COLOUR_KEY, "#9999FF"));
+        if ($$(HIGHLIGHT_TRADE_PARTNERS_KEY)) $$(HIGHLIGHT_TRADE_PARTNERS_KEY).checked = getSetting(HIGHLIGHT_TRADE_PARTNERS_KEY, true);
+        if ($$(HIGHLIGHT_POOR_TRADES_KEY)) $$(HIGHLIGHT_POOR_TRADES_KEY).checked = getSetting(HIGHLIGHT_POOR_TRADES_KEY, true);
+        if ($$(POOR_TRADE_UPPER_THRESHOLD_KEY)) $$(POOR_TRADE_UPPER_THRESHOLD_KEY).value = getSetting(POOR_TRADE_UPPER_THRESHOLD_KEY, 10);
+        if ($$(POOR_TRADE_LOWER_THRESHOLD_KEY)) $$(POOR_TRADE_LOWER_THRESHOLD_KEY).value = getSetting(POOR_TRADE_LOWER_THRESHOLD_KEY, 10);
+        if ($$(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY)) $$(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY).checked = getSetting(HIGHLIGHT_DUPLICATE_TRADE_PARTNERS_KEY, true);
+        if ($$(SHOW_TOTAL_FLEET_ROW_KEY)) $$(SHOW_TOTAL_FLEET_ROW_KEY).checked = getSetting(SHOW_TOTAL_FLEET_ROW_KEY, true);
+        if ($$(SHOW_ATTACK_SIZE_KEY)) $$(SHOW_ATTACK_SIZE_KEY).checked = getSetting(SHOW_ATTACK_SIZE_KEY, true);
+        if ($$(ADD_FLEET_MOVE_LINK_KEY)) $$(ADD_FLEET_MOVE_LINK_KEY).checked = getSetting(ADD_FLEET_MOVE_LINK_KEY, true);
+        if ($$(ENABLE_PRODUCTION_PRESETS_KEY)) $$(ENABLE_PRODUCTION_PRESETS_KEY).checked = getSetting(ENABLE_PRODUCTION_PRESETS_KEY, true);
+        if ($$(ADD_EMPIRE_SUBMENU_KEY)) $$(ADD_EMPIRE_SUBMENU_KEY).checked = getSetting(ADD_EMPIRE_SUBMENU_KEY, true);
+        if ($$(MOVE_EMPIRE_SUBMENU_KEY)) $$(MOVE_EMPIRE_SUBMENU_KEY).checked = getSetting(MOVE_EMPIRE_SUBMENU_KEY, true);
+        if ($$(INSERT_BATTLECALC_LINK_KEY)) $$(INSERT_BATTLECALC_LINK_KEY).checked = getSetting(INSERT_BATTLECALC_LINK_KEY, true);
+        if ($$(ADJUST_TITLES_KEY)) $$(ADJUST_TITLES_KEY).checked = getSetting(ADJUST_TITLES_KEY, true);
+        if ($$(FIX_QUEUES_KEY)) $$(FIX_QUEUES_KEY).checked = getSetting(FIX_QUEUES_KEY, true);
+        if ($$(MAX_QUEUES_KEY)) $$(MAX_QUEUES_KEY).value = getSetting(MAX_QUEUES_KEY, 5);
+        if ($$(HIGHLIGHT_PLAYERS_KEY)) $$(HIGHLIGHT_PLAYERS_KEY).checked = getSetting(HIGHLIGHT_PLAYERS_KEY, true);
+        if ($$(PLAYER_COLORS_KEY)) $$(PLAYER_COLORS_KEY).value = unescape(getSetting(PLAYER_COLORS_KEY, "Drekons=#FF82AB,United Colonies=#7FFF00"));
+        if ($$(MY_GUILD_KEY)) $$(MY_GUILD_KEY).value = unescape(getSetting(MY_GUILD_KEY, "[MyGuild]"));
+        if ($$(MY_GUILD_COLOUR_KEY)) $$(MY_GUILD_COLOUR_KEY).value = unescape(getSetting(MY_GUILD_COLOUR_KEY, "#9999FF"));
         document.getElementById(MY_NAME_KEY).value = unescape(getSetting(MY_NAME_KEY, ""));
-        if ($(ENEMY_GUILDS_KEY)) $(ENEMY_GUILDS_KEY).value = unescape(getSetting(ENEMY_GUILDS_KEY, "[Enemy1],[Enemy2]"));
-        if ($(NAPPED_GUILDS_KEY)) $(NAPPED_GUILDS_KEY).value = unescape(getSetting(NAPPED_GUILDS_KEY, "[Nap1],[Nap2]"));
-        if ($(ALLIED_GUILDS_KEY)) $(ALLIED_GUILDS_KEY).value = unescape(getSetting(ALLIED_GUILDS_KEY, "[Ally1],[Ally2]"));
-        if ($(ENEMY_GUILDS_COLOUR_KEY)) $(ENEMY_GUILDS_COLOUR_KEY).value = unescape(getSetting(ENEMY_GUILDS_COLOUR_KEY, "red"));
-        if ($(NAPPED_GUILDS_COLOUR_KEY)) $(NAPPED_GUILDS_COLOUR_KEY).value = unescape(getSetting(NAPPED_GUILDS_COLOUR_KEY, "#CCCC00"));
-        if ($(ALLIED_GUILDS_COLOUR_KEY)) $(ALLIED_GUILDS_COLOUR_KEY).value = unescape(getSetting(ALLIED_GUILDS_COLOUR_KEY, "#9999FF"));
-        if ($(HIGHLIGHT_TRADE_COLOUR_KEY)) $(HIGHLIGHT_TRADE_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_TRADE_COLOUR_KEY, "#8B0000"));
-        if ($(HIGHLIGHT_BASE_COLOUR_KEY)) $(HIGHLIGHT_BASE_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_BASE_COLOUR_KEY, "red"));
-        if ($(HIGHLIGHT_SYSTEM_COLOUR_KEY)) $(HIGHLIGHT_SYSTEM_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_SYSTEM_COLOUR_KEY, "orange"));
-        if ($(HIGHLIGHT_CUS_SCANNER_KEY)) $(HIGHLIGHT_CUS_SCANNER_KEY).value = unescape(getSetting(HIGHLIGHT_CUS_SCANNER_KEY, "A99:99:99:99,B99:99:99:99"));
-        if ($(HIGHLIGHT_CUSBASE_COLOUR_KEY)) $(HIGHLIGHT_CUSBASE_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_CUSBASE_COLOUR_KEY, "purple"));
-        if ($(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY)) $(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY, "blue"));
-        if ($(STRUCT_COLOUR1_KEY)) $(STRUCT_COLOUR1_KEY).value = unescape(getSetting(STRUCT_COLOUR1_KEY, "aqua"));
-        if ($(STRUCT_COLOUR2_KEY)) $(STRUCT_COLOUR2_KEY).value = unescape(getSetting(STRUCT_COLOUR2_KEY, "orange"));
-        if ($(STRUCT_COLOUR3_KEY)) $(STRUCT_COLOUR3_KEY).value = unescape(getSetting(STRUCT_COLOUR3_KEY, "green"));
-        if ($(SUM_FLEETS_KEY)) $(SUM_FLEETS_KEY).checked = getSetting(SUM_FLEETS_KEY, true);
-        if ($(SUM_FLEETS_BASE)) $(SUM_FLEETS_BASE).checked = getSetting(SUM_FLEETS_BASE, true);
-        if ($(FLEET_INFO_POPUP)) $(FLEET_INFO_POPUP).checked = getSetting(FLEET_INFO_POPUP, true);
-        if ($(FLEET_INFO_POPUP_TIMER)) $(FLEET_INFO_POPUP_TIMER).value = getSetting(FLEET_INFO_POPUP_TIMER, 20);
-        if ($(FLEET_INFO_POPUP_FADE)) $(FLEET_INFO_POPUP_FADE).checked = getSetting(FLEET_INFO_POPUP_FADE, true);
-        if ($(SUM_CREDITS_KEY)) $(SUM_CREDITS_KEY).checked = getSetting(SUM_CREDITS_KEY, true);
-        if ($(FORMAT_NUMBERS_KEY)) $(FORMAT_NUMBERS_KEY).checked = getSetting(FORMAT_NUMBERS_KEY, true);
-        if ($(NUMBER_DELIMETER_KEY)) $(NUMBER_DELIMETER_KEY).value = unescape(getSetting(NUMBER_DELIMETER_KEY, ","));
-        if ($(CLONE_BASE_LINKS_KEY)) $(CLONE_BASE_LINKS_KEY).checked = getSetting(CLONE_BASE_LINKS_KEY, true);
-        if ($(CLONE_FLEET_LINKS_KEY)) $(CLONE_FLEET_LINKS_KEY).checked = getSetting(CLONE_FLEET_LINKS_KEY, true);
-        if ($(MOVE_GALAXY_LINKS_KEY)) $(MOVE_GALAXY_LINKS_KEY).checked = getSetting(MOVE_GALAXY_LINKS_KEY, false);
-        if ($(STRUCTURES_GOALS_KEY)) $(STRUCTURES_GOALS_KEY).checked = getSetting(STRUCTURES_GOALS_KEY, true);
-        if ($(AUTOSET_GUILD_KEY)) $(AUTOSET_GUILD_KEY).checked = getSetting(AUTOSET_GUILD_KEY, true);
-        if ($(CONSTRUCT_ENHANCE_KEY)) $(CONSTRUCT_ENHANCE_KEY).checked = getSetting(CONSTRUCT_ENHANCE_KEY, false);
-        if ($(SCRIPT_BATTLECALC_KEY)) $(SCRIPT_BATTLECALC_KEY).checked = getSetting(SCRIPT_BATTLECALC_KEY, true);
-        if ($(AUTOSET_GUILD_NOTIFY_KEY)) $(AUTOSET_GUILD_NOTIFY_KEY).checked = getSetting(AUTOSET_GUILD_NOTIFY_KEY, true);
-        if ($(INSERT_MOVE_PRESETS_KEY)) $(INSERT_MOVE_PRESETS_KEY).checked = getSetting(INSERT_MOVE_PRESETS_KEY, true);
-        if ($(SHOW_EXECUTION_TIME_KEY)) $(SHOW_EXECUTION_TIME_KEY).checked = getSetting(SHOW_EXECUTION_TIME_KEY, false);
+        if ($$(ENEMY_GUILDS_KEY)) $$(ENEMY_GUILDS_KEY).value = unescape(getSetting(ENEMY_GUILDS_KEY, "[Enemy1],[Enemy2]"));
+        if ($$(NAPPED_GUILDS_KEY)) $$(NAPPED_GUILDS_KEY).value = unescape(getSetting(NAPPED_GUILDS_KEY, "[Nap1],[Nap2]"));
+        if ($$(ALLIED_GUILDS_KEY)) $$(ALLIED_GUILDS_KEY).value = unescape(getSetting(ALLIED_GUILDS_KEY, "[Ally1],[Ally2]"));
+        if ($$(ENEMY_GUILDS_COLOUR_KEY)) $$(ENEMY_GUILDS_COLOUR_KEY).value = unescape(getSetting(ENEMY_GUILDS_COLOUR_KEY, "red"));
+        if ($$(NAPPED_GUILDS_COLOUR_KEY)) $$(NAPPED_GUILDS_COLOUR_KEY).value = unescape(getSetting(NAPPED_GUILDS_COLOUR_KEY, "#CCCC00"));
+        if ($$(ALLIED_GUILDS_COLOUR_KEY)) $$(ALLIED_GUILDS_COLOUR_KEY).value = unescape(getSetting(ALLIED_GUILDS_COLOUR_KEY, "#9999FF"));
+        if ($$(HIGHLIGHT_TRADE_COLOUR_KEY)) $$(HIGHLIGHT_TRADE_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_TRADE_COLOUR_KEY, "#8B0000"));
+        if ($$(HIGHLIGHT_BASE_COLOUR_KEY)) $$(HIGHLIGHT_BASE_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_BASE_COLOUR_KEY, "red"));
+        if ($$(HIGHLIGHT_SYSTEM_COLOUR_KEY)) $$(HIGHLIGHT_SYSTEM_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_SYSTEM_COLOUR_KEY, "orange"));
+        if ($$(HIGHLIGHT_CUS_SCANNER_KEY)) $$(HIGHLIGHT_CUS_SCANNER_KEY).value = unescape(getSetting(HIGHLIGHT_CUS_SCANNER_KEY, "A99:99:99:99,B99:99:99:99"));
+        if ($$(HIGHLIGHT_CUSBASE_COLOUR_KEY)) $$(HIGHLIGHT_CUSBASE_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_CUSBASE_COLOUR_KEY, "purple"));
+        if ($$(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY)) $$(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY).value = unescape(getSetting(HIGHLIGHT_CUSSYSTEM_COLOUR_KEY, "blue"));
+        if ($$(STRUCT_COLOUR1_KEY)) $$(STRUCT_COLOUR1_KEY).value = unescape(getSetting(STRUCT_COLOUR1_KEY, "aqua"));
+        if ($$(STRUCT_COLOUR2_KEY)) $$(STRUCT_COLOUR2_KEY).value = unescape(getSetting(STRUCT_COLOUR2_KEY, "orange"));
+        if ($$(STRUCT_COLOUR3_KEY)) $$(STRUCT_COLOUR3_KEY).value = unescape(getSetting(STRUCT_COLOUR3_KEY, "green"));
+        if ($$(SUM_FLEETS_KEY)) $$(SUM_FLEETS_KEY).checked = getSetting(SUM_FLEETS_KEY, true);
+        if ($$(SUM_FLEETS_BASE)) $$(SUM_FLEETS_BASE).checked = getSetting(SUM_FLEETS_BASE, true);
+        if ($$(FLEET_INFO_POPUP)) $$(FLEET_INFO_POPUP).checked = getSetting(FLEET_INFO_POPUP, true);
+        if ($$(FLEET_INFO_POPUP_TIMER)) $$(FLEET_INFO_POPUP_TIMER).value = getSetting(FLEET_INFO_POPUP_TIMER, 20);
+        if ($$(FLEET_INFO_POPUP_FADE)) $$(FLEET_INFO_POPUP_FADE).checked = getSetting(FLEET_INFO_POPUP_FADE, true);
+        if ($$(SUM_CREDITS_KEY)) $$(SUM_CREDITS_KEY).checked = getSetting(SUM_CREDITS_KEY, true);
+        if ($$(FORMAT_NUMBERS_KEY)) $$(FORMAT_NUMBERS_KEY).checked = getSetting(FORMAT_NUMBERS_KEY, true);
+        if ($$(NUMBER_DELIMETER_KEY)) $$(NUMBER_DELIMETER_KEY).value = unescape(getSetting(NUMBER_DELIMETER_KEY, ","));
+        if ($$(CLONE_BASE_LINKS_KEY)) $$(CLONE_BASE_LINKS_KEY).checked = getSetting(CLONE_BASE_LINKS_KEY, true);
+        if ($$(CLONE_FLEET_LINKS_KEY)) $$(CLONE_FLEET_LINKS_KEY).checked = getSetting(CLONE_FLEET_LINKS_KEY, true);
+        if ($$(MOVE_GALAXY_LINKS_KEY)) $$(MOVE_GALAXY_LINKS_KEY).checked = getSetting(MOVE_GALAXY_LINKS_KEY, false);
+        if ($$(STRUCTURES_GOALS_KEY)) $$(STRUCTURES_GOALS_KEY).checked = getSetting(STRUCTURES_GOALS_KEY, true);
+        if ($$(AUTOSET_GUILD_KEY)) $$(AUTOSET_GUILD_KEY).checked = getSetting(AUTOSET_GUILD_KEY, true);
+        if ($$(CONSTRUCT_ENHANCE_KEY)) $$(CONSTRUCT_ENHANCE_KEY).checked = getSetting(CONSTRUCT_ENHANCE_KEY, false);
+        if ($$(SCRIPT_BATTLECALC_KEY)) $$(SCRIPT_BATTLECALC_KEY).checked = getSetting(SCRIPT_BATTLECALC_KEY, true);
+        if ($$(AUTOSET_GUILD_NOTIFY_KEY)) $$(AUTOSET_GUILD_NOTIFY_KEY).checked = getSetting(AUTOSET_GUILD_NOTIFY_KEY, true);
+        if ($$(INSERT_MOVE_PRESETS_KEY)) $$(INSERT_MOVE_PRESETS_KEY).checked = getSetting(INSERT_MOVE_PRESETS_KEY, true);
+        if ($$(SHOW_EXECUTION_TIME_KEY)) $$(SHOW_EXECUTION_TIME_KEY).checked = getSetting(SHOW_EXECUTION_TIME_KEY, false);
 
 
-        if ($(NAME_LOCATIONS_KEY)) $(NAME_LOCATIONS_KEY).checked = getSetting(NAME_LOCATIONS_KEY, false);
-        if ($(LOCATION_NAMES_KEY)) $(LOCATION_NAMES_KEY).value = unescape(getSetting(LOCATION_NAMES_KEY, "A12:12:12:12=my home base,A13:13:13:13=my other base"));
+        if ($$(NAME_LOCATIONS_KEY)) $$(NAME_LOCATIONS_KEY).checked = getSetting(NAME_LOCATIONS_KEY, false);
+        if ($$(LOCATION_NAMES_KEY)) $$(LOCATION_NAMES_KEY).value = unescape(getSetting(LOCATION_NAMES_KEY, "A12:12:12:12=my home base,A13:13:13:13=my other base"));
 
-        if ($(SHOW_PILLAGE_KEY)) $(SHOW_PILLAGE_KEY).checked = getSetting(SHOW_PILLAGE_KEY, true);
-        if ($(FORMAT_SCANNER_KEY)) $(FORMAT_SCANNER_KEY).checked = getSetting(FORMAT_SCANNER_KEY, true);
-        if ($(REMOVE_REDIRECT_KEY)) $(REMOVE_REDIRECT_KEY).checked = getSetting(REMOVE_REDIRECT_KEY, true);
-        if ($(DEBUG_KEY)) $(DEBUG_KEY).checked = getSetting(DEBUG_KEY, false);
+        if ($$(SHOW_PILLAGE_KEY)) $$(SHOW_PILLAGE_KEY).checked = getSetting(SHOW_PILLAGE_KEY, true);
+        if ($$(FORMAT_SCANNER_KEY)) $$(FORMAT_SCANNER_KEY).checked = getSetting(FORMAT_SCANNER_KEY, true);
+        if ($$(REMOVE_REDIRECT_KEY)) $$(REMOVE_REDIRECT_KEY).checked = getSetting(REMOVE_REDIRECT_KEY, true);
+        if ($$(DEBUG_KEY)) $$(DEBUG_KEY).checked = getSetting(DEBUG_KEY, false);
         var logLevel = getSetting(LOG_LEVEL_KEY, LOG_LEVEL_WARN);
         //console.log("Log level: "+logLevel);
         var radioButtons = document.evaluate(
@@ -4403,7 +4407,7 @@ function node(opt) {
         checked: 1
     };
     var id = opt.id;
-    var n = $(id);
+    var n = $$(id);
     if (!n) {
         var tag = attr("tag") || "div";
         if ("string" == typeof tag) n = document.createElement(tag);
@@ -4444,7 +4448,7 @@ function node(opt) {
         else n.setAttribute(prop, opt[prop] + "");
     if (ids)
         for (var id in ids)
-            ids[id] = $(id);
+            ids[id] = $$(id);
     return ids || n;
 }
 var EventManager = {
@@ -4460,7 +4464,7 @@ var EventManager = {
         this.Initialise();
         if (typeof a == "string") {
             if (!a) return false;
-            a = $(a)
+            a = $$(a)
         }
         if (a == null || c == null) {
             return false
@@ -4519,7 +4523,7 @@ function getOptionDefaults() {
 }
 
 function popupOptions() {
-    if (!$("optionDiv")) {
+    if (!$$("optionDiv")) {
         optionDiv = document.createElement("div");
         optionDiv.style['position'] = "fixed";
         optionDiv.style['top'] = "20px";
@@ -4594,7 +4598,7 @@ function popupOptions() {
             }
         }
 
-        $("optionDiv").appendChild(div);
+        $$("optionDiv").appendChild(div);
 
         optionClose = document.createElement("a");
         optionClose.style['left'] = "329px";
@@ -4606,7 +4610,7 @@ function popupOptions() {
         optionClose.href = "javascript:void(1)";
         optionClose.innerHTML = "[x]";
         optionClose.id = "optionCloseDiv";
-        $("optionDiv").appendChild(optionClose);
+        $$("optionDiv").appendChild(optionClose);
         EventManager.Add(optionClose, 'click', reloadPage);
     }
 
@@ -4659,6 +4663,7 @@ function enhanceConstructionPage(reload) {
         gasAdjust = 0,
         fusionAdjust = 0,
         antimatterAdjust = 0,
+        orbplantAdjust = 0,
         researchAdjust = 0,
         metalAdjust = 0,
         crystalAdjust = 0,
@@ -4718,6 +4723,8 @@ function enhanceConstructionPage(reload) {
                 fusionAdjust++;
             else if (itemName.indexOf("Antimatter Plants") != -1)
                 antimatterAdjust++;
+            else if (itemName.indexOf("Orbital Plants") != -1)
+                orbplantAdjust++;
             else if (itemName.indexOf("Research Labs") != -1)
                 researchAdjust++;
             else if (itemName.indexOf("Metal Refineries") != -1)
@@ -4918,21 +4925,21 @@ function enhanceConstructionPage(reload) {
         bestEnergySignifier.setAttribute("id", "bestSpan");
         for (var nrow = 1; nrow < table.rows.length; nrow += 2) {
             if (!table.rows[nrow].innerHTML.match(/linked to this base research./)) {
-                var cname = table.rows[nrow].childNodes[1].firstChild.firstChild.textContent;
-                table.rows[nrow].childNodes[1].firstChild.firstChild.setAttribute('onclick', table.rows[nrow].getAttribute('onclick'));
+                var cname = table.rows[nrow].childNodes[1].childNodes[1].textContent;
+                table.rows[nrow].childNodes[1].childNodes[1].setAttribute('onclick', table.rows[nrow].getAttribute('onclick'));
                 table.rows[nrow].setAttribute('onclick', '');
                 if (location.indexOf('view=structures') != -1) {
                     table.rows[nrow].title = cname;
                     var td1help_res = new Array();
-                    if (table.rows[nrow + 1] && !reload) {
-                        var td1help_res = table.rows[nrow + 1].innerHTML.match(/(fertility|metal resource|crystals resource).\((.+?)\)/);
+                    if (table.rows[nrow] && !reload) {
+                        var td1help_res = table.rows[nrow].innerHTML.match(/(fertility|bases metal|bases crystal).\((.+?)\)/);
                         if (td1help_res) {
                             if (flag == 0) {
                                 if (td1help_res[1] == "fertility") {
                                     var td1help = "&nbsp;(Fert " + td1help_res[2] + ")"
-                                } else if (td1help_res[1] == "metal resource") {
+                                } else if (td1help_res[1] == "bases metal") {
                                     var td1help = "&nbsp;(Metal " + td1help_res[2] + ")"
-                                } else if (td1help_res[1] == "crystals resource") {
+                                } else if (td1help_res[1] == "bases crystal") {
                                     var td1help = "&nbsp;(Crystals " + td1help_res[2] + ")"
                                 }
                                 var d = table.rows[nrow].childNodes[1].innerHTML + td1help;
@@ -4987,7 +4994,7 @@ function enhanceConstructionPage(reload) {
                             bestPopSignifier.parentNode.removeChild(bestPopSignifier);
                             table.rows[nrow].childNodes[2].appendChild(bestPopSignifier);
                         }
-                    } else if (cname == 'Solar Plants' || cname == 'Gas Plants' || cname == 'Fusion Plants' || cname == 'Antimatter Plants') {
+                    } else if (cname == 'Solar Plants' || cname == 'Gas Plants' || cname == 'Fusion Plants' || cname == 'Antimatter Plants' || cname == 'Oribtal Plants') {
                         if (cname == 'Solar Plants')
                             adjust = solarAdjust
                         else if (cname == 'Gas Plants')
@@ -4996,6 +5003,8 @@ function enhanceConstructionPage(reload) {
                             adjust = fusionAdjust
                         else if (cname == 'Antimatter Plants')
                             adjust = antimatterAdjust
+                        else if (cname == 'Orbital Plants')
+                            adjust == orbplantAdjust
                         makeAdjustments(nrow, adjust);
                         var c = parseNum(itemcost);
                         var e = parseNum(table.rows[nrow].childNodes[3].firstChild.nodeValue.slice(1));
@@ -5223,7 +5232,7 @@ function enhanceConstructionPage(reload) {
                         buttontext.href = "javascript: void(0);";
                         buttontext.id = "queueLink_" + a;
                         //buttontext.setAttribute("onclick", "document.getElementsByName('item')[0].selectedIndex="+a+"; add_to_queue('"+queueURL+"');");
-                        buttontext.innerHTML = "Queue"
+                        buttontext.innerHTML = "++"
                         if (buttontext) {
                             if (getView() == 'Research')
                                 colnum = 3;
@@ -5231,7 +5240,7 @@ function enhanceConstructionPage(reload) {
                                 colnum = 5;
                             table.rows[nrow].childNodes[colnum].style.whiteSpace = ' nowrap';
                             table.rows[nrow].childNodes[colnum].appendChild(buttontext);
-                            $("queueLink_" + a).addEventListener("click", function() {
+                            $$("queueLink_" + a).addEventListener("click", function() {
                                 addToQueue(this);
                             }, true);
                         }
@@ -5242,7 +5251,7 @@ function enhanceConstructionPage(reload) {
                     }
                 }
                 if (!table.rows[nrow].innerHTML.match(/Research Labs linked to this base research./) && table.rows[nrow + 1]) {
-                    table.rows[nrow + 1].getElementsByClassName("help comment")[0].innerHTML = "<div id='itemDetails" + ((nrow + 1) / 2) + "'></div>";
+                    table.rows[nrow].getElementsByClassName("comment")[0].innerHTML = "<div id='itemDetails" + ((nrow + 1) / 2) + "'></div>";
                     if (isNewStyle()) {
                         table.rows[nrow].getElementsByClassName("td_icon non-hilite")[0].firstChild.style.display = "none";
                     }
@@ -5254,8 +5263,8 @@ function enhanceConstructionPage(reload) {
 
 function addToQueue(index) {
     var id = index.id.substr(index.id.indexOf("_") + 1);
-    $('item').selectedIndex = id;
-    $('add-to-queue').click();
+    $$('item').selectedIndex = id;
+    $$('add-to-queue').click();
 }
 
 var oldFunction = unsafeWindow.show_success;
@@ -5265,11 +5274,11 @@ unsafeWindow.show_success = function() {
 };
 
 function show_start() {
-    $("queueLoaderTemplate").delay(1000).show(200);
+    $$("queueLoaderTemplate").delay(1000).show(200);
 }
 
 function grabCaps() {
-    capArray = $("empire_capacities").getElementsByClassName("layout listing sorttable")[0].childNodes[1];
+    capArray = $$("empire_capacities").getElementsByClassName("layout listing sorttable")[0].childNodes[1];
     cons = "";
     prod = "";
     res = "";
@@ -5605,7 +5614,7 @@ function enhancedProduction() {
     l.innerHTML = "<hr style='margin:0px; padding:5px; border:0px black solid;'>";
     l.colSpan = "8";
     l.align = "center";
-    $("spacer").appendChild(l);
+    $$("spacer").appendChild(l);
 
     l = document.createElement("tr");
     l.id = "globalRow";
@@ -5616,22 +5625,22 @@ function enhancedProduction() {
     l.innerHTML = "Global Settings (Affects all bases)";
     l.colSpan = "3";
     l.align = "center";
-    $("globalRow").appendChild(l);
+    $$("globalRow").appendChild(l);
     l = document.createElement("td");
     l.innerHTML = rowSelectHTML;
     l.align = "right";
-    $("globalRow").appendChild(l);
+    $$("globalRow").appendChild(l);
 
     l = document.createElement("td");
     l.innerHTML = "<input type='text' tabindex='" + (tableRows + 1) + "' onclick='cancelEvent(event);' class='input-numeric quant' onkeyup='update_row(&quot;3&quot;); rowActive(&quot;row3&quot;, this);' maxlength='5' size='5' id='quant_global'>";
     l.align = "center";
-    $("globalRow").appendChild(l)
+    $$("globalRow").appendChild(l)
 
     l = document.createElement("td");
     l.innerHTML = "";
     l.colSpan = "3";
     l.align = "center";
-    $("globalRow").appendChild(l);
+    $$("globalRow").appendChild(l);
 
 
     l = document.createElement("tr");
@@ -5642,43 +5651,43 @@ function enhancedProduction() {
     l = document.createElement("td");
     l.colSpan = "3";
     l.align = "center";
-    $("extraRow").appendChild(l);
+    $$("extraRow").appendChild(l);
 
     l = document.createElement("td");
     l.align = "right";
     l.id = 'resetU';
-    $("extraRow").appendChild(l);
+    $$("extraRow").appendChild(l);
     l = document.createElement("input");
     l.type = "reset";
     l.id = "resetValuesButton";
     l.value = "Reset Units";
-    $("resetU").appendChild(l);
+    $$("resetU").appendChild(l);
 
     l = document.createElement("td");
     l.align = "center";
     l.id = 'resetQ';
-    $("extraRow").appendChild(l)
+    $$("extraRow").appendChild(l)
     l = document.createElement("input");
     l.type = "reset";
     l.id = "resetButton";
     l.value = "Reset Quantitys";
-    $("resetQ").appendChild(l);
+    $$("resetQ").appendChild(l);
 
     l = document.createElement("td");
     l.innerHTML = "";
     l.colSpan = "3";
     l.align = "center";
 
-    $("unit_global").addEventListener('change', function() {
+    $$("unit_global").addEventListener('change', function() {
         globalProdHelperEvent(ProdTable);
     }, true);
-    $("quant_global").addEventListener('keyup', function() {
+    $$("quant_global").addEventListener('keyup', function() {
         globalQuantSetHelperEvent(ProdTable);
     }, true);
-    $("resetButton").addEventListener('click', function() {
+    $$("resetButton").addEventListener('click', function() {
         resetForm(false);
     }, true);
-    $("resetValuesButton").addEventListener('click', function() {
+    $$("resetValuesButton").addEventListener('click', function() {
         resetForm(true);
     }, true);
 }
@@ -5688,16 +5697,16 @@ function resetForm(units) {
     prodReset = true;
     for (i = 1; i <= tableRows; i++) {
         if (units) {
-            $("select_" + i).selectedIndex = 0;
+            $$("select_" + i).selectedIndex = 0;
         } else {
-            $("quant_" + i).value = 0;
+            $$("quant_" + i).value = 0;
             update_row(i);
         }
     }
     if (units)
-        $("unit_global").selectedIndex = 0;
+        $$("unit_global").selectedIndex = 0;
     else
-        $("quant_global").value = 0;
+        $$("quant_global").value = 0;
 
     prodReset = false;
 }
@@ -5705,7 +5714,7 @@ function resetForm(units) {
 function globalProdHelperEvent(table) {
     if (prodReset)
         return;
-    var selectedDex = $("unit_global").options[$("unit_global").selectedIndex].value;
+    var selectedDex = $$("unit_global").options[$$("unit_global").selectedIndex].value;
     for (var i = 0; i < table.childNodes[1].childNodes.length; i += 2) {
         if (table.childNodes[1].childNodes[i].childNodes[3]) {
             var rowData = table.childNodes[1].childNodes[i].childNodes[3].firstChild;
@@ -5728,14 +5737,14 @@ function globalProdHelperEvent(table) {
 function globalQuantSetHelperEvent(table) {
     if (prodReset)
         return;
-    var selectedDex = $("unit_global").options[$("unit_global").selectedIndex].value;
+    var selectedDex = $$("unit_global").options[$$("unit_global").selectedIndex].value;
     for (var i = 0; i < table.childNodes[1].childNodes.length; i += 2) {
         if (table.childNodes[1].childNodes[i].childNodes[3]) {
             var rowData = table.childNodes[1].childNodes[i].childNodes[3].firstChild;
             if (rowData) {
                 if (rowData.childNodes[rowData.selectedIndex].value == selectedDex) {
                     var num = rowData.id.split("_");
-                    $("quant_" + num[1]).value = $("quant_global").value;
+                    $$("quant_" + num[1]).value = $$("quant_global").value;
                     update_row(num[1]);
                 }
             }
@@ -6196,7 +6205,7 @@ function showQuickBar() {
 
     var expandLink = document.createElement("a");
     expandLink.setAttribute("href", "javascript:void(0)");
-    expandLink.innerHTML = "+ Script Wiki";
+    expandLink.innerHTML = "+ Script Github";
     expandLink.id = "qb_Wiki_Expand";
     expandLink.addEventListener("click", function() {
         expandQB(this.id);
@@ -6204,9 +6213,8 @@ function showQuickBar() {
     qb.appendChild(expandLink);
 
     var qbApp = document.createElement("table");
-    qbApp.innerHTML = "<tr><th colspan='2'>AE Bits Wikipedia</th></tr><tr><td colspan='2'>This tool lets you search the script wiki for questions about the script.</td></tr>" +
-        "<tr><td width='75px'>Search For:</td><td align='left'><input type='text' id='qb_Wiki_Search'/></td></tr>" +
-        "<tr><td colspan='2' align='center'><input type='button' value='Search!' id='qb_Wiki_SearchButton'/></td></tr>";
+    qbApp.innerHTML = "<tr><th colspan='2'>AE Bits Github</th></tr><tr><td colspan='2'>Check for updates, etc.</td></tr>" +
+        "<tr><td colspan='2' align='center'><input type='button' value='Go!' id='qb_Wiki_SearchButton'/></td></tr>";
     qbApp.id = "qb_wiki";
     qbApp.setAttribute("class", "top");
     if (isNewStyle()) {
@@ -6248,149 +6256,148 @@ function showQuickBar() {
     qb.appendChild(document.createElement("br"));
 
     document.body.appendChild(qb);
-    if ($('qb_DistCalc_Calc'))
-        $('qb_DistCalc_Calc').addEventListener("click", function() {
+    if ($$('qb_DistCalc_Calc'))
+        $$('qb_DistCalc_Calc').addEventListener("click", function() {
             qbCalcDistance();
         }, true);
-    if ($('qb_DistCalc_Reset'))
-        $('qb_DistCalc_Reset').addEventListener("click", function() {
+    if ($$('qb_DistCalc_Reset'))
+        $$('qb_DistCalc_Reset').addEventListener("click", function() {
             resetQBData();
         }, true);
 
-    if ($('qb_DistCalc_Start')) {
-        $('qb_DistCalc_Start').addEventListener("change", function() {
+    if ($$('qb_DistCalc_Start')) {
+        $$('qb_DistCalc_Start').addEventListener("change", function() {
             saveQBData();
         }, true);
-        $('qb_DistCalc_Start').value = getSetting("qb_DistCalc_Start", "");
+        $$('qb_DistCalc_Start').value = getSetting("qb_DistCalc_Start", "");
     }
-    if ($('qb_DistCalc_End')) {
-        $('qb_DistCalc_End').addEventListener("change", function() {
+    if ($$('qb_DistCalc_End')) {
+        $$('qb_DistCalc_End').addEventListener("change", function() {
             saveQBData();
         }, true);
-        $('qb_DistCalc_End').value = getSetting("qb_DistCalc_End", "");
+        $$('qb_DistCalc_End').value = getSetting("qb_DistCalc_End", "");
     }
-    if ($('qb_unitSel')) {
-        $('qb_unitSel').addEventListener("change", function() {
+    if ($$('qb_unitSel')) {
+        $$('qb_unitSel').addEventListener("change", function() {
             saveQBData();
         }, true);
-        $('qb_unitSel').value = getSetting("qb_unitSel", "");
+        $$('qb_unitSel').value = getSetting("qb_unitSel", "");
     }
-    if ($('qb_DistCalc_Warp')) {
-        $('qb_DistCalc_Warp').addEventListener("change", function() {
+    if ($$('qb_DistCalc_Warp')) {
+        $$('qb_DistCalc_Warp').addEventListener("change", function() {
             saveQBData();
         }, true);
-        $('qb_DistCalc_Warp').value = getSetting("qb_DistCalc_Warp", "");
+        $$('qb_DistCalc_Warp').value = getSetting("qb_DistCalc_Warp", "");
     }
-    if ($('qb_DistCalc_Gate')) {
-        $('qb_DistCalc_Gate').addEventListener("change", function() {
+    if ($$('qb_DistCalc_Gate')) {
+        $$('qb_DistCalc_Gate').addEventListener("change", function() {
             saveQBData();
         }, true);
-        $('qb_DistCalc_Gate').value = getSetting("qb_DistCalc_Gate", "");
+        $$('qb_DistCalc_Gate').value = getSetting("qb_DistCalc_Gate", "");
     }
-    if ($('qb_DistCalc_Com')) {
-        $('qb_DistCalc_Com').addEventListener("change", function() {
+    if ($$('qb_DistCalc_Com')) {
+        $$('qb_DistCalc_Com').addEventListener("change", function() {
             saveQBData();
         }, true);
-        $('qb_DistCalc_Com').value = getSetting("qb_DistCalc_Com", "");
+        $$('qb_DistCalc_Com').value = getSetting("qb_DistCalc_Com", "");
     }
-    if ($('qb_DistCalc_Time')) {
-        $('qb_DistCalc_Time').value = getSetting("qb_DistCalc_Time", "");
-        if (trim($('qb_DistCalc_Time').value, " ") == "") {
-            $('qb_DistCalc_Time').value = getCurrentServerTime();
+    if ($$('qb_DistCalc_Time')) {
+        $$('qb_DistCalc_Time').value = getSetting("qb_DistCalc_Time", "");
+        if (trim($$('qb_DistCalc_Time').value, " ") == "") {
+            $$('qb_DistCalc_Time').value = getCurrentServerTime();
         }
-        $('qb_DistCalc_Time').addEventListener("change", function() {
+        $$('qb_DistCalc_Time').addEventListener("change", function() {
             saveQBData();
         }, true);
     }
 
-    if ($('qb_Wiki_SearchButton')) {
-        $('qb_Wiki_SearchButton').addEventListener("click", function() {
-            searchWiki();
+    if ($$('qb_Wiki_SearchButton')) {
+        $$('qb_Wiki_SearchButton').addEventListener("click", function() {
+            openGithub();
         }, true);
-        populateWikiSearch();
     }
 
-    if ($('qb_MapMpve_Go')) {
-        $('qb_MapMpve_Go').addEventListener("click", function() {
+    if ($$('qb_MapMpve_Go')) {
+        $$('qb_MapMpve_Go').addEventListener("click", function() {
             MapLocationJump();
         }, true);
     }
 }
 
 function saveQBData() {
-    if ($('qb_DistCalc_Start').value != "") setSetting("qb_DistCalc_Start", $('qb_DistCalc_Start').value);
-    if ($('qb_DistCalc_End').value != "") setSetting("qb_DistCalc_End", $('qb_DistCalc_End').value);
-    if ($('qb_unitSel').value != "") setSetting("qb_unitSel", $('qb_unitSel').value);
-    if ($('qb_DistCalc_Warp').value != "") setSetting("qb_DistCalc_Warp", $('qb_DistCalc_Warp').value);
-    if ($('qb_DistCalc_Gate').value != "") setSetting("qb_DistCalc_Gate", $('qb_DistCalc_Gate').value);
-    if ($('qb_DistCalc_Com').value != "") setSetting("qb_DistCalc_Com", $('qb_DistCalc_Com').value);
-    if ($('qb_DistCalc_Time').value != "") setSetting("qb_DistCalc_Time", $('qb_DistCalc_Time').value);
+    if ($$('qb_DistCalc_Start').value != "") setSetting("qb_DistCalc_Start", $$('qb_DistCalc_Start').value);
+    if ($$('qb_DistCalc_End').value != "") setSetting("qb_DistCalc_End", $$('qb_DistCalc_End').value);
+    if ($$('qb_unitSel').value != "") setSetting("qb_unitSel", $$('qb_unitSel').value);
+    if ($$('qb_DistCalc_Warp').value != "") setSetting("qb_DistCalc_Warp", $$('qb_DistCalc_Warp').value);
+    if ($$('qb_DistCalc_Gate').value != "") setSetting("qb_DistCalc_Gate", $$('qb_DistCalc_Gate').value);
+    if ($$('qb_DistCalc_Com').value != "") setSetting("qb_DistCalc_Com", $$('qb_DistCalc_Com').value);
+    if ($$('qb_DistCalc_Time').value != "") setSetting("qb_DistCalc_Time", $$('qb_DistCalc_Time').value);
 }
 
 function resetQBData() {
-    $('qb_DistCalc_Start').value = "";
+    $$('qb_DistCalc_Start').value = "";
     setSetting("qb_DistCalc_Start", "");
-    $('qb_DistCalc_End').value = "";
+    $$('qb_DistCalc_End').value = "";
     setSetting("qb_DistCalc_End", "");
-    $('qb_unitSel').selectedIndex = 0;
+    $$('qb_unitSel').selectedIndex = 0;
     setSetting("qb_unitSel", "");
-    $('qb_DistCalc_Warp').value = "";
+    $$('qb_DistCalc_Warp').value = "";
     setSetting("qb_DistCalc_Warp", "");
-    $('qb_DistCalc_Gate').value = "";
+    $$('qb_DistCalc_Gate').value = "";
     setSetting("qb_DistCalc_Gate", "");
-    $('qb_DistCalc_Com').value = "";
+    $$('qb_DistCalc_Com').value = "";
     setSetting("qb_DistCalc_Com", "");
-    $('qb_DistCalc_Time').value = getCurrentServerTime();
+    $$('qb_DistCalc_Time').value = getCurrentServerTime();
     setSetting("qb_DistCalc_Time", "");
 }
 
 function expandQB(sender) {
     if (sender == 'qb_Expand') {
-        if ($('qb_Expand').innerHTML == "+ Distance Calc") {
-            $('qb_Expand').innerHTML = "- Distance Calc";
-            $('qb_Content').style.visibility = "visible";
-            $('qb_Content').style.display = "block";
+        if ($$('qb_Expand').innerHTML == "+ Distance Calc") {
+            $$('qb_Expand').innerHTML = "- Distance Calc";
+            $$('qb_Content').style.visibility = "visible";
+            $$('qb_Content').style.display = "block";
         } else {
-            $('qb_Expand').innerHTML = "+ Distance Calc";
-            $('qb_Content').style.visibility = "Hidden";
-            $('qb_Content').style.display = "none";
+            $$('qb_Expand').innerHTML = "+ Distance Calc";
+            $$('qb_Content').style.visibility = "Hidden";
+            $$('qb_Content').style.display = "none";
         }
     }
     if (sender == 'qb_Wiki_Expand') {
-        if ($('qb_Wiki_Expand').innerHTML == "+ Script Wiki") {
-            $('qb_Wiki_Expand').innerHTML = "- Script Wiki";
-            $('qb_wiki').style.visibility = "visible";
-            $('qb_wiki').style.display = "block";
+        if ($$('qb_Wiki_Expand').innerHTML == "+ Script Github") {
+            $$('qb_Wiki_Expand').innerHTML = "- Script Github";
+            $$('qb_wiki').style.visibility = "visible";
+            $$('qb_wiki').style.display = "block";
         } else {
-            $('qb_Wiki_Expand').innerHTML = "+ Script Wiki";
-            $('qb_wiki').style.visibility = "Hidden";
-            $('qb_wiki').style.display = "none";
+            $$('qb_Wiki_Expand').innerHTML = "+ Script Github";
+            $$('qb_wiki').style.visibility = "Hidden";
+            $$('qb_wiki').style.display = "none";
         }
     }
     if (sender == 'qb_Map_Move') {
-        if ($('qb_Map_Move').innerHTML == "+ Location Jump") {
-            $('qb_Map_Move').innerHTML = "- Location Jump";
-            $('qb_MapMove').style.visibility = "visible";
-            $('qb_MapMove').style.display = "block";
+        if ($$('qb_Map_Move').innerHTML == "+ Location Jump") {
+            $$('qb_Map_Move').innerHTML = "- Location Jump";
+            $$('qb_MapMove').style.visibility = "visible";
+            $$('qb_MapMove').style.display = "block";
         } else {
-            $('qb_Map_Move').innerHTML = "+ Location Jump";
-            $('qb_MapMove').style.visibility = "Hidden";
-            $('qb_MapMove').style.display = "none";
+            $$('qb_Map_Move').innerHTML = "+ Location Jump";
+            $$('qb_MapMove').style.visibility = "Hidden";
+            $$('qb_MapMove').style.display = "none";
         }
     }
 }
 
 function qbCalcDistance() {
-    var start = $('qb_DistCalc_Start').value;
-    var end = $('qb_DistCalc_End').value;
-    var unit = $('qb_unitSel').selectedIndex;
+    var start = $$('qb_DistCalc_Start').value;
+    var end = $$('qb_DistCalc_End').value;
+    var unit = $$('qb_unitSel').selectedIndex;
     if (start != "" && end != "") {
         qb_calc_distance();
     }
     if (unit != 0) {
         qb_calc_duration();
     }
-    $('qb_Launch').innerHTML = getLaunchTime($('qb_DistCalc_Time').value, $('qb_Duration').textContent);
+    $$('qb_Launch').innerHTML = getLaunchTime($$('qb_DistCalc_Time').value, $$('qb_Duration').textContent);
 }
 
 function qb_calc_distance() // Calc Distance Start-Target
@@ -6488,28 +6495,28 @@ function qb_calc_duration() // Calc travel duration
 {
     var distance = 0;
     var speed = 0;
-    var logistics = trim($('qb_DistCalc_Com').value, " ");
+    var logistics = trim($$('qb_DistCalc_Com').value, " ");
     var duration = "";
-    var warp = trim($('qb_DistCalc_Warp').value, " ");
-    var gate = trim($('qb_DistCalc_Gate').value, " ");
+    var warp = trim($$('qb_DistCalc_Warp').value, " ");
+    var gate = trim($$('qb_DistCalc_Gate').value, " ");
     if (warp != "") warp = parseInt(warp);
     if (gate != "") gate = parseInt(gate);
     if (logistics != "") logistics = parseInt(logistics);
     if (isNaN(warp)) {
-        $('qb_DistCalc_Warp').value = "Invalid!";
+        $$('qb_DistCalc_Warp').value = "Invalid!";
         return;
     }
     if (isNaN(gate)) {
-        $('qb_DistCalc_Gate').value = "Invalid!";
+        $$('qb_DistCalc_Gate').value = "Invalid!";
         return;
     }
     if (isNaN(logistics)) {
-        $('qb_DistCalc_Com').value = "Invalid!";
+        $$('qb_DistCalc_Com').value = "Invalid!";
         return;
     }
     warp = ((warp * 5) + 100) / 100;
-    distance = parseInt($("qb_Distance").innerHTML);
-    speed = parseInt($('qb_unitSel').options[$('qb_unitSel').selectedIndex].value);
+    distance = parseInt($$("qb_Distance").innerHTML);
+    speed = parseInt($$('qb_unitSel').options[$$('qb_unitSel').selectedIndex].value);
     if (warp > 0) speed = Math.round(speed * warp * 100) / 100;
     if (gate > 0) speed = speed * (gate + 1);
     if ((distance > 0) && (speed > 0)) {
@@ -6526,70 +6533,19 @@ function qb_calc_duration() // Calc travel duration
         if (h > 0) duration += h + "h ";
         if (m > 0) duration += m + "m ";
         duration += s + "s";
-        $("qb_Duration").innerHTML = duration;
+        $$("qb_Duration").innerHTML = duration;
     }
 }
 
-function searchWiki() {
-    var url = "http://vig.vg/AE_Wiki/index.php/Special:Search?search=" + $('qb_Wiki_Search').value + "&go=Go";
+function openGithub() {
+    var url = "https://github.com/cruentus/rickAEB";
     GM_openInTab(url);
 }
 
-function populateWikiSearch() {
-    var sValue = "";
-    var eView = getView();
-    if (location.indexOf('empire.aspx') != -1) {
-        if (eView == "")
-            eView = "Events";
-        else if (eView.indexOf('_') != -1)
-            eView = eView.substr(eView.indexOf('_') + 1);
-        sValue += "Empire:" + eView;
-    }
-    if (location.indexOf('profile.aspx') != -1) {
-        sValue = "Profile";
-    }
-    if (location.indexOf('credits.aspx') != -1) {
-        sValue = "Credits";
-    }
-    if (location.indexOf('messages.aspx') != -1) {
-        sValue = "Messages";
-    }
-    if (location.indexOf('board.aspx') != -1) {
-        sValue = "Board";
-    }
-    if (location.indexOf('map.aspx') != -1) {
-        sValue = "Map";
-    }
-    if (location.indexOf('guild.aspx') != -1) {
-        sValue = "Guild";
-    }
-    if (location.indexOf('commander.aspx') != -1) {
-        sValue = "Commanders";
-    }
-    if (location.indexOf('base.aspx') != -1) {
-        sValue = "Base";
-        if (location.indexOf('?') != -1) {
-            if (eView == "")
-                eView = "Overview";
-            sValue += ":" + eView;
-        }
-    }
-    if (location.indexOf('fleet.aspx') != -1) {
-        sValue = "Fleet";
-        if (location.indexOf('?') != -1) {
-            if (eView == "")
-                eView = "Overview";
-            else if (eView.indexOf('_') != -1)
-                eView = eView.replace('_', ' ');
-            sValue += ":" + eView;
-        }
-    }
-    $('qb_Wiki_Search').value = sValue;
-}
 
 function MapLocationJump() {
-    if ($('qb_map_move')) {
-        var loc = $('qb_map_move').value;
+    if ($$('qb_map_move')) {
+        var loc = $$('qb_map_move').value;
         loc = trim(loc);
         if (loc.match(/[A-Z]\d+:\d+:\d+/)) {
             var link = "http://" + getServer() + ".astroempires.com/map.aspx?loc=" + loc;
@@ -6609,6 +6565,38 @@ function MapLocationJump() {
 // ==========================================================
 // New switching page loader function, should reduce codesize
 // ==========================================================
+
+//==========================================
+// Rick New Functions (execution)
+//==========================================
+
+function cp_ae_rick(){
+    function fleetOverviewUIChange() {
+        var ownfleet = $('a:contains(Rename)');
+        var tbl = $('table:contains(Destination)');
+        var thtml = '';
+
+        if (tbl.length == 0) tbl = $('table:contains(Rename)')
+        tbl.after(thtml);
+
+        if (ownfleet.length > 0) {
+            // check for recs on/off
+            var t = $('small:contains(Recyclers are turned)');
+            if (t.length > 0) console.log('Recycler link here');
+            if (t.length == 0) {
+                // add force on and off links
+                var cen = $('#fleet_overview tbody tr td center');
+                var fleetid = window.location.href.match(/\d+/)[0];
+                var url = 'fleet.aspx?fleet=' + fleetid;
+                cen.html('<small><a href="' + url + '&action=turn_rec_off">Force Recyclers OFF</a><br/>' + '</small>');
+            }
+        }
+    }
+if (location.indexOf("fleet.aspx?fleet=") != -1) {
+    fleetOverviewUIChange();
+    }
+}
+
 function cp_ae_main() {
     //profile_context.start('cp_ae_main');
     try {
@@ -7249,7 +7237,7 @@ function highlightCommanders() {
 // Ensure everythings loading in the proper order, stuff thats priority loads first while bulk of script can be disabled easily
 
 function cp_ae_initalisation() {
-    if (!$('AEBits_Unique')) {
+    if (!$$('AEBits_Unique')) {
         var divUnique = document.createElement('div');
         divUnique.id = "AEBits_Unique";
         document.body.appendChild(divUnique);
@@ -7280,11 +7268,6 @@ function cp_ae_initalisation() {
             onFeatureComplete("Check Base Data Age");
             checkGuildDataAge();
             onFeatureComplete("Check Guild Data Age");
-            //if (getView()!="Technologies")
-            //{
-            //  checkTechDataAge();
-            //  onFeatureComplete("Check Tech Data Age");
-            //}
             if (location.indexOf('bookmarks.aspx') == -1 && location.indexOf('empire.aspx') == -1 && getSetting(NAME_LOCATIONS_KEY, false)) {
                 replaceLocationNames();
                 onFeatureComplete("Named Locations");
@@ -7296,6 +7279,9 @@ function cp_ae_initalisation() {
             }
         }
         //  Main
+        console.log("Running cp_ae_rick");
+        cp_ae_rick();
+
         console.log("Running cp_ae_main");
         cp_ae_main();
 
@@ -7470,7 +7456,7 @@ try {
     console.log("Trying CP_AE now.");
     cp_ae_initalisation();
 } catch (e) {
-    debug("\n General error: "+e+"\nLine Number: "+e.lineNumber,'error');
+   // debug("\n General error: "+e+"\nLine Number: "+e.lineNumber,'error');
     console.log("General error: " +e+ "Line Number: " +e.lineNUmber);
 }}
 var totalEnd = new Date();
