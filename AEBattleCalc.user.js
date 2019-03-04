@@ -289,7 +289,7 @@ function isConfirmPage()
 {
 	var temp = false;
 	var confirmTitle = document.evaluate(
-			"//th[text() ='Confirm Attack']",
+			"//b[text() ='Confirm Attack']",
 			document,
 			null,
 			XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
