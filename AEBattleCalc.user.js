@@ -124,8 +124,11 @@ function findScale(name)
 }
 function roundUp(value, scale)
 {
+	// HC: d = Math.floor(Math.round(10 * d) / 10);
+	// DN++ d = Math.floor(Math.round(100 * d) / 10);
+
     var mult = Math.pow(10,scale);
-    var rounded = Math.ceil(value*mult) / mult;
+    var rounded = Math.floor(Math.round(value*mult) / mult);
     //console.log("roundUp("+value+", "+scale+") returned "+rounded+", complete.");
     return rounded;
 }
@@ -305,12 +308,6 @@ function attackOneWay(aRows, dRows, attacker)
 			//console.log(aName+" "+pLevel+" ~ " + shipDefaultPower[getShipIndex(aName)]);
 		}
 
-        //console.log("aRow = aRows.snapshotItem("+i+")\n"+
-        //        "\taName = "+aName+"\n"+
-        //        "\taUnits = "+aUnits+"\n"+
-        //        "\taPower = "+aPower+"\n"+
-        //        "\taBleedthru = "+aBleedthru+"\n"+
-        //        "\taIsTurret = "+aIsTurret);
 
         while (aUnits > 0.0001) // prevent spinning
         {
@@ -325,8 +322,7 @@ function attackOneWay(aRows, dRows, attacker)
                 if (dUnits > 0)
                 {
                     totalDamagePerUnit = totalDamagePerUnit +
-                        //calcDamagePerUnit(aPower, dShield, aBleedthru);
-                        calcDamagePerUnitNew(aPower, dShield, aBleedthru, aShieldDmg)
+                    calcDamagePerUnitNew(aPower, dShield, aBleedthru, aShieldDmg)
                     dFleetTypeCount++;
                 }
             }
@@ -334,10 +330,8 @@ function attackOneWay(aRows, dRows, attacker)
             //console.log("dFleetTypeCount = "+dFleetTypeCount);
             if (dFleetTypeCount <= 0)
             {
-                //console.log("All Fleet Destroyed!");
                 break;
             }
-            //console.log("totalDamagePerUnit = "+totalDamagePerUnit);
 
             var aUnitsUsed = 0;
             for (var j = 0; j < dRows.snapshotLength; j++)
@@ -471,21 +465,12 @@ function attackOneWay(aRows, dRows, attacker)
                 }
                 else
                 {
-					//var remaining = Math.round((((dHp - damage) / dArmor)*100)/100);
-					//var remaining = (dHp - damage) / dArmor;
-					//if( s > 0)
-					//{
+
                     dRow.childNodes[END_QUANT_INDEX].firstChild.textContent =
                         remaining;
-					//}
-					//else
-					//{
-					//	dRow.childNodes[END_QUANT_INDEX].firstChild.textContent =
-                    //    Math.round((dHp - damage) / dArmor);
-					//}
+			
                     aUnitsUsed = aUnitsUsed + attackingUnits;
-                    //console.log(dName+" units remaining = "+((dHp - damage) / dArmor)+"\n"+
-                    //        "\taUnitsUsed = "+aUnitsUsed);
+
                 }
 				if(!dIsTurret)
 				{
@@ -495,25 +480,18 @@ function attackOneWay(aRows, dRows, attacker)
 						s = 1;
 					}
 					var lost = roundUp(dUnits - Math.ceil(remaining),findScale(dName));
-					//console.log("Units: " +dUnits + " Remaining: " + remaining + " Lost: " + lost);
-					//derbs =((2*armour lvl * unit cost)/100)
 					if(lost > 0 )
 					{
 						lost = Math.ceil(lost);
 						totalLosses[0] += lost*s;
-						//debug(dName + " Lost: " + lost);
 						totalLosses[1] += Math.floor(lost * Math.floor((2*aLevel*s)/100));
 					}
 				}
-				//console.log(dName + " Start = " + dUnits+" remaining = "+remaining + " Losses="+totalLosses);
             }
             aUnits = aUnits - aUnitsUsed;
-            //console.log("aUnits remaining = "+aUnits);
         }
 
     }
-	//console.log("totalLosses = "+totalLosses);
-    //console.log("attackOneWay("+aRows+", "+dRows+") complete.");
 	return totalLosses;
 }
 function initEndQuants(rows)
@@ -521,14 +499,9 @@ function initEndQuants(rows)
     for (var i = 0; i < rows.snapshotLength; i++)
     {
         var row = rows.snapshotItem(i);
-//console.log(row);
-        // end quant = start quant
-		//console.log(row.childNodes[END_QUANT_INDEX].firstChild.nodeValue);
         row.childNodes[END_QUANT_INDEX].firstChild.textContent =
             row.childNodes[START_QUANT_INDEX].firstChild.textContent;
-			//console.log(row.childNodes[END_QUANT_INDEX].firstChild.nodeValue);
     }
-    //console.log("initEndQuants("+rows+") complete.");
 }
 function runBattleCalc()
 {
@@ -545,8 +518,6 @@ function runBattleCalc()
             null,
             XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
             null);
-    //console.log(attackerRows);
-    //console.log(defenderRows);
     initEndQuants(attackerRows);
     initEndQuants(defenderRows);
 
@@ -560,9 +531,6 @@ function runBattleCalc()
 
     var endTime = new Date();
     var runSeconds = endTime.getTime() - startTime.getTime();
-
-//    console.log("AE Battle Calc Completed Successfully!\n\tCalc Duration: " + runSeconds / 1000 + " seconds\n\tEnd Time: " + endTime.toString());
-    //console.log("runBattleCalc() complete.");
 }
 function insertTechInformation( battleReport)
 {
@@ -738,11 +706,7 @@ function getShipIndex (shipName){
 if (isConfirmPage){
 try{
 	runBattleCalc();
-	////debug(attackerTech);
-	////debug(defenderTech);
 } catch (e) {
-	////debug("battlecalc error: "+ e)
-	////debug("line: "+e.lineNumber);
 }
 }
 // totalEnd = new Date();
