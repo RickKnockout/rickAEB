@@ -129,7 +129,9 @@ function roundUp(value, scale)
 
     var mult = Math.pow(10,scale);
     var rounded = Math.floor(Math.round(value*mult) / mult);
-    //console.log("roundUp("+value+", "+scale+") returned "+rounded+", complete.");
+    if (scale === 0){
+    rounded = Math.ceil(value);
+    }
     return rounded;
 }
 function roundEndQuants(rows)
