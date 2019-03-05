@@ -66,6 +66,30 @@ function calcDamagePerUnit(power, shield, over) {
 	//console.log("calcDamagePerUnit("+power+", "+shield+", "+over+") returned "+damagePerUnit+", complete.");
 	return damagePerUnit;
 }
+function calcDamagePerUnitNew(power, shield, bleed, nobleed){
+	var damagePerUnit = 0;
+	if (shield === 0){
+		damagePerUnit = power
+	}else{
+		if (shield < power) {
+		damagePerUnit = power - shield * nobleed;
+	}
+	else {damagePerUnit = power * bleed;}}
+  return damagePerUnit
+}
+function calculateDamagePerUnitFactor(power, shield, bleed, nobleed) {
+	var factor = 0.85
+
+	if (shield === 0){
+		damagePerUnit = power
+	}else{
+		if (shield < power) {
+		damagePerUnit = power - shield * nobleed;
+	}
+	else {damagePerUnit = power * bleed;}}
+	return Math.pow(damagePerUnit,factor)
+}
+
 function findScale(name)
 {
     var scale;
@@ -205,10 +229,13 @@ function attackOneWay(aRows, dRows, attacker)
         }
 
         //find power over shields
-        var aOverShields = 0.01;
-        if (aName == "Ion Bombers" || aName == "Ion Frigates")
+        var aBleedthru = 0.01;
+        var aShieldDmg = 0.99;
+        if (aName == "Ion Bombers" || aName == "Ion Frigate")
         {
-            aOverShields = 0.50;
+            aBleedthru = 0.50;
+            aShieldDmg = 0.50;
+
         }
 		var pLevel = Math.round((((aPower/shipDefaultPower[getShipIndex(aName)])* 100) - 100)/5);
 		if(attacker)
@@ -282,7 +309,7 @@ function attackOneWay(aRows, dRows, attacker)
         //        "\taName = "+aName+"\n"+
         //        "\taUnits = "+aUnits+"\n"+
         //        "\taPower = "+aPower+"\n"+
-        //        "\taOverShields = "+aOverShields+"\n"+
+        //        "\taBleedthru = "+aBleedthru+"\n"+
         //        "\taIsTurret = "+aIsTurret);
 
         while (aUnits > 0.0001) // prevent spinning
@@ -298,7 +325,8 @@ function attackOneWay(aRows, dRows, attacker)
                 if (dUnits > 0)
                 {
                     totalDamagePerUnit = totalDamagePerUnit +
-                        calcDamagePerUnit(aPower, dShield, aOverShields);
+                        //calcDamagePerUnit(aPower, dShield, aBleedthru);
+                        calcDamagePerUnitNew(aPower, dShield, aBleedthru, aShieldDmg)
                     dFleetTypeCount++;
                 }
             }
@@ -337,6 +365,7 @@ function attackOneWay(aRows, dRows, attacker)
 		        {
 		            dIsTurret = true;
 		        }
+
                 var dArmor = dRow.childNodes[ARMOR_INDEX].firstChild.nodeValue - 0;
                 var dHp = dUnits * dArmor;
                 var dShield = dRow.childNodes[SHIELD_INDEX].firstChild.nodeValue - 0;
@@ -417,14 +446,8 @@ function attackOneWay(aRows, dRows, attacker)
 				}
 
 
-               // console.log("dRow = dRows.snapshotItem("+j+")\n"+
-               //         "\tdName = "+dName+"\n"+
-               //         "\tdUnits = "+dUnits+"\n"+
-               //         "\tdArmor = "+dArmor+"\n"+
-                //        "\tdHp = "+dHp+"\n"+
-                //        "\tdShield = "+dShield);
-
-                var damagePerUnit = calcDamagePerUnit(aPower, dShield, aOverShields);
+                //var damagePerUnit = calcDamagePerUnit(aPower, dShield, aBleedthru);
+                var damagePerUnit = calcDamagePerUnitNew(aPower, dShield, aBleedthru, aShieldDmg);
                 //attackers for this defender group
                 var attackingUnits = aUnits * damagePerUnit / totalDamagePerUnit;
                 if (aIsTurret)
