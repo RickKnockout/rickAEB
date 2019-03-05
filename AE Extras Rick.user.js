@@ -4933,14 +4933,14 @@ function enhanceConstructionPage(reload) {
                     table.rows[nrow].title = cname;
                     var td1help_res = new Array();
                     if (table.rows[nrow] && !reload) {
-                        var td1help_res = table.rows[nrow].innerHTML.match(/(fertility|bases metal|bases crystal).\((.+?)\)/);
+                        var td1help_res = table.rows[nrow].innerHTML.match(/(fertility|bases metal|crystals resource).\((.+?)\)/);
                         if (td1help_res) {
                             if (flag == 0) {
                                 if (td1help_res[1] == "fertility") {
                                     var td1help = "&nbsp;(Fert " + td1help_res[2] + ")"
                                 } else if (td1help_res[1] == "bases metal") {
                                     var td1help = "&nbsp;(Metal " + td1help_res[2] + ")"
-                                } else if (td1help_res[1] == "bases crystal") {
+                                } else if (td1help_res[1] == "crystals resource") {
                                     var td1help = "&nbsp;(Crystals " + td1help_res[2] + ")"
                                 }
                                 var d = table.rows[nrow].childNodes[1].innerHTML + td1help;
