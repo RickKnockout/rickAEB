@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
+// @version		1.10
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -50,10 +51,19 @@ AE Bits (after vig stopped development) -- Rick (March 2, 2019)
 
 ------March 2, 2019------
 - Ported to Chrome, for TamperMonkey
-- Fixed issues with Fleet on Empier Page
-- Fixed player highlighting based on color
-- Added a check for Anti-Admins
-- Lots of other stuff...
+- Fixed issues with Fleet on Empire Page
+- Fixed player highlighting based on guild
+- Added a check for Admins
+
+
+------March 5, 2019------
+- Version 1.10
+- Ported function to convert astro locations to read-only input boxes, for easy copy/paste.
+- Auto guild setting should work now
+- Added in recyclers ON or OFF to fleets
+- Fixed fleet-popup, hovering over a fleet name should show what is inside that fleet now.
+- Fixed sidebar.. will add discord link or something like that later.
+- Fixed construction enhancer / helper
 
 ----------------------
 Disclaimer
