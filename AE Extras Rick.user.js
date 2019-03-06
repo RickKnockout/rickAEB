@@ -4486,7 +4486,6 @@ var EventManager = {
 
 
 
-
 //==========================================
 //End aeproject code
 //==========================================
@@ -6591,52 +6590,97 @@ function cp_ae_rick() {
         }
     }
 
-    function astroPageUIChange() {
-    var el;
-    var centers = document.getElementsByTagName('center');
-    for (var x = 0; x < centers.length; x++) {
-        if (centers[x].textContent.indexOf('Galaxy') != -1) {
-            el = centers[x];
-            break;
+    function base_arrows() {
+        var base_box = document.getElementsByTagName('select')[0];
+        if (base_box == undefined) return;
+        var last;
+        var last_name;
+        var next;
+        var next_name;
+        for (var i = 0; i < base_box.options.length; i++) {
+            if (base_box.options[i].selected == true) {
+                if (i > 0) {
+                    last = base_box.options[i - 1].value;
+                    last_name = base_box.options[i - 1].textContent;
+                }
+                if (base_box.options[i + 1]) {
+                    next = base_box.options[i + 1].value;
+                    next_name = base_box.options[i + 1].textContent;
+                    break;
+                }
+            }
+        }
+        var inputs = base_box.parentNode.getElementsByTagName('input');
+        var view;
+        for (var i = 0; i < inputs.length; i++) {
+            if (inputs[i].name == 'view') view = inputs[i].value;
+        }
+        if (last) {
+            var last_link = document.createElement('a');
+            last_link.textContent = '<';
+            last_link.href = '/base.aspx?base=' + last + '&view=' + view;
+            last_link.title = last_name;
+            base_box.parentNode.insertBefore(last_link, base_box);
+        }
+        if (next) {
+            var next_link = document.createElement('a');
+            next_link.textContent = '>';
+            next_link.href = '/base.aspx?base=' + next + '&view=' + view;
+            next_link.title = next_name;
+            base_box.parentNode.insertBefore(next_link, base_box.nextSibling);
         }
     }
-    var text_node = el.firstChild.lastChild;
-    if (text_node.nodeName != '#text') return;
-    var regex = /^(.*\()([A-Z]\d\d:\d\d:\d\d:\d\d)(\).*)$/;
-    var res = regex.exec(text_node.textContent);
-    if (res) {
-        text_node.textContent = res[1];
-        var textbox = document.createElement('input');
-        textbox.type = 'text';
-        textbox.id = 'loc';
-        textbox.size = 12;
-        textbox.value = res[2];
-        textbox.addEventListener('click', function() {
-            textbox.select();
-        }, false);
-        textbox.readonly = true;
-        var node2 = document.createTextNode(res[3]);
-        text_node.parentNode.insertBefore(node2, text_node.nextSibling);
-        text_node.parentNode.insertBefore(textbox, node2);
-    }
-}
 
-var search = decodeURIComponent(window.location.search).replace('?', '');
-switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
-    case 'fleet':
-     if (location.indexOf("fleet.aspx?fleet=") != -1) {
-        fleetOverviewUIChange();
-     }
-        break;
-    case 'map':
-        var region = search.match(/loc=([A-Z]\d\d:\d\d)/);
-        var system = search.match(/loc=([A-Z]\d\d:\d\d:\d\d)/);
-        var astro = search.match(/loc=([A-Z]\d\d:\d\d:\d\d:\d\d)/);
-        if (astro != null) {
-            astroPageUIChange();
-        } else if (system != null) {;
-                                   }
-}
+    function astroPageUIChange() {
+        var el;
+        var centers = document.getElementsByTagName('center');
+        for (var x = 0; x < centers.length; x++) {
+            if (centers[x].textContent.indexOf('Galaxy') != -1) {
+                el = centers[x];
+                break;
+            }
+        }
+        var text_node = el.firstChild.lastChild;
+        if (text_node.nodeName != '#text') return;
+        var regex = /^(.*\()([A-Z]\d\d:\d\d:\d\d:\d\d)(\).*)$/;
+        var res = regex.exec(text_node.textContent);
+        if (res) {
+            text_node.textContent = res[1];
+            var textbox = document.createElement('input');
+            textbox.type = 'text';
+            textbox.id = 'loc';
+            textbox.size = 12;
+            textbox.value = res[2];
+            textbox.addEventListener('click', function() {
+                textbox.select();
+            }, false);
+            textbox.readonly = true;
+            var node2 = document.createTextNode(res[3]);
+            text_node.parentNode.insertBefore(node2, text_node.nextSibling);
+            text_node.parentNode.insertBefore(textbox, node2);
+        }
+    }
+
+    var search = decodeURIComponent(window.location.search).replace('?', '');
+    switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
+        case 'fleet':
+            if (location.indexOf("fleet.aspx?fleet=") != -1) {
+                fleetOverviewUIChange();
+            }
+            break;
+        case 'map':
+            var region = search.match(/loc=([A-Z]\d\d:\d\d)/);
+            var system = search.match(/loc=([A-Z]\d\d:\d\d:\d\d)/);
+            var astro = search.match(/loc=([A-Z]\d\d:\d\d:\d\d:\d\d)/);
+            if (astro != null) {
+                astroPageUIChange();
+            } else if (system != null) {
+                break;
+            }
+        case 'base':
+            base_arrows();
+            break;
+    }
 }
 
 function cp_ae_main() {
