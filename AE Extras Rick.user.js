@@ -3548,22 +3548,22 @@ function zeroPad(num) {
 //of Debris on each astro (if any)
 //==========================================
 
-function debrisShow() {
-    var spanArray = document.getElementsByTagName("span")
-    for (var i = 0; i < spanArray.length; i++) {
-        if (spanArray[i].getAttribute("class") == "gray comment") {
+function debrisShow() { //Fixed 2019 March - Rick
+    var divArray = document.getElementsByTagName("DIV") // getting div instead of span...
+    for (var i = 0; i < divArray.length; i++) {
+        if (divArray[i].title.indexOf("Debris") !== -1) { //Checking title for word debris
             //          Attempt to move debris to a better location commented out due to bug with occ bases
             //          spanArray[i].style.cssText='position:relative;top:10px;';
-            spanArray[i].innerHTML = spanArray[i].title;
-            spanArray[i].parentNode.setAttribute('align', 'center');
+            divArray[i].innerHTML = divArray[i].title;
+            divArray[i].parentNode.setAttribute('align', 'center');
             //          var br = document.createElement("br");
             //          var tag = spanArray[i];
 
             //          spanArray[i].parentNode.insertBefore(br,tag);
         }
     }
-
 }
+
 
 //==========================================
 //Pillage viewer
