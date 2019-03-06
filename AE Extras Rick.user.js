@@ -13,7 +13,6 @@
 // @grant GM_addStyle
 // @grant         GM_xmlhttpRequest
 // @include             http*://*.astroempires.com/*
-// @include             http://www.vig.vg/*
 // @exclude             http*://*.astroempires.com/
 // @exclude             http*://*.astroempires.com/home.aspx*
 // @exclude             http*://*.astroempires.com/login.aspx*
@@ -379,6 +378,20 @@ function getGuild(name){
     else return name;
 }
 
+function trim(str, chars) {
+	return ltrim(rtrim(str, chars), chars);
+}
+
+function ltrim(str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+}
+
+function rtrim(str, chars) {
+	chars = chars || "\\s";
+	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+}
+
 //From http://www.web-source.net/web_development/currency_formatting.htm
 function commaFormat(amount) { // 2010-10, used 6 times
     var delimiter = unescape(getSetting(NUMBER_DELIMETER_KEY, ","));
@@ -502,7 +515,7 @@ function displayTimes() { // 2010-10, used once
 
 var _server = null;
 
-function getServer() { // 2010-10, used alot
+function getServer() { //updated for https support, rick 02-29-19
     if (_server == null) {
         var regex = /https?:\/\/([a-z]+)\.astroempires\.com/;
         var result = regex.exec(document.location);
@@ -516,7 +529,7 @@ function getServer() { // 2010-10, used alot
     return _server;
 }
 
-function getGalaxy() { // 2010-10, used 2 times
+function getGalaxy() { //
     if (_server == null) var _server = getServer();
     return _server.charAt(0).toUpperCase();
 }
@@ -837,15 +850,10 @@ function sumShips(rows) {
         if (getSetting(ADD_FLEET_MOVE_LINK_KEY, true)) {
             header.snapshotItem(0).firstChild.setAttribute("colspan", "2");
         }
-        //console.log('Ship Sums: '+sums);
-        //console.log('Mobile ship Sums: '+mobileSums);
-        //console.log("Mobile fleet "+overallMobileFleetTotal);
-        //console.log("Mobile attack fleet "+overallMobileFightingFleetTotal);
         if (getSetting(SHOW_TOTAL_FLEET_ROW_KEY, true)) {
             insertTotalsRow(rows.snapshotItem(0).parentNode, sums, totalMobileSums, rows.snapshotLength - 1,
                 mobileFleetCount, overallFleetTotal, overallFightingFleetTotal, overallMobileFleetTotal, overallMobileFightingFleetTotal);
         }
-        //console.log(prepareTotalsRow(sums));
     } catch (e) {
         console.log("Line Number: " + e.lineNumber + "\n sumships error: " + e);
     }
@@ -1104,11 +1112,6 @@ var guild_color_cache = {};
 function getHighlightColorForGuild(guild) {
     if (!myGuildColor) myGuildColor = unescape(getSetting(MY_GUILD_COLOUR_KEY, null));
     if (!myGuild) myGuild = unescape(getSetting(MY_GUILD_KEY, null));
-    //    if(myGuild != null && myGuildColor != null) {
-    //        myGuild = unescape(myGuild);
-    //        myGuildColor = unescape(myGuildColor);
-    //    }
-    //    debug("myguild: "+myGuild+" colour:"+ myGuildColor);
     if (myGuild != null && myGuildColor != null) {
         if (myGuild == guild)
             return myGuildColor;
@@ -1119,13 +1122,8 @@ function getHighlightColorForGuild(guild) {
     var guilds = guild_color_cache.guilds;
     var guildColor = guild_color_cache.guildColor;
     if (guilds != null && guildColor != null) {
-        //        guilds = unescape(guilds);
-        //        guildColor = unescape(guildColor);
-        //        debug("guilds: "+guilds);
         var guildArray = guilds.split(",");
-        //        debug("guildArray: "+guildArray);
         for (var i = 0; i < guildArray.length; i++) {
-            //debug(guildArray[i].split("=")[0] +" = "+ guild);
             if (guildArray[i].split("=")[0] == guild) return guildColor; // FIXME
         }
     }
@@ -1135,11 +1133,8 @@ function getHighlightColorForGuild(guild) {
     guilds = guild_color_cache.nap_guilds;
     guildColor = guild_color_cache.map_guilds_color;
     if (guilds != null && guildColor != null) {
-        //console.log("guilds: "+guilds);
         guildArray = guilds.split(",");
-        //console.log("guildArray: "+guildArray);
         for (i = 0; i < guildArray.length; i++) {
-            //console.log(guildArray[i].split("=")[0] +" = "+ guild);
             if (guildArray[i].split("=")[0] == guild)
                 return guildColor;
         }
@@ -1149,11 +1144,8 @@ function getHighlightColorForGuild(guild) {
     if (guilds != null && guildColor != null) {
         guilds = unescape(guilds);
         guildColor = unescape(guildColor);
-        //console.log("guilds: "+guilds);
         guildArray = guilds.split(",");
-        //console.log("guildArray: "+guildArray);
         for (i = 0; i < guildArray.length; i++) {
-            //console.log(guildArray[i].split("=")[0] +" = "+ guild);
             if (guildArray[i].split("=")[0] == guild)
                 return guildColor;
         }
@@ -1166,13 +1158,9 @@ function getHighlightColorForPlayer(player) {
     var playerColors = getSetting(PLAYER_COLORS_KEY, null);
     if (playerColors == null) return;
     playerColors = unescape(playerColors);
-    //console.log("colors: "+playerColors);
     var playerArray = playerColors.split(",");
-    //console.log("playerArray: "+playerArray);
     for (var i = 0; i < playerArray.length; i++) {
-        //console.log(playerArray[i].split("=")[0] +" = "+ player);
         if (playerArray[i].split("=")[0] == player) {
-            //console.log(playerArray[i].split("=")[0] +" = "+ player);
             return playerArray[i].split("=")[1];
         }
     }
