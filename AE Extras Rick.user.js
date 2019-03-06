@@ -11,6 +11,7 @@
 // @grant window.close
 // @grant window.focus
 // @grant GM_addStyle
+// @grant    GM_openInTab
 // @grant         GM_xmlhttpRequest
 // @include             http*://*.astroempires.com/*
 // @exclude             http*://*.astroempires.com/
