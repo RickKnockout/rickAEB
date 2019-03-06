@@ -4518,12 +4518,6 @@ function astroPageUIChange() {
 var search = decodeURIComponent(window.location.search).replace('?', '');
 switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
     case 'fleet':
-        /**
-    if (search.match(/fleet=\d+/) != null && search.match(/view=/) == null) // fleetOverviewUIChange(); //Fix me later
-	else if (search.match(/fleet=\d+/) == null || search.match(/view=move_start/) != null) // fleetPageUIChange(); //Fix me later
-	else if (search.match(/fleet=\d+&view=move/) != null) // fleetMoveUIChange(); // Fix me later
-	else if (search.match(/fleet=\d+&view=attack/) != null) // mapFleetOutline("#fleets_attack-list", false); //Fix me later
-    **/
         break;
     case 'map':
         var region = search.match(/loc=([A-Z]\d\d:\d\d)/);
@@ -4531,44 +4525,8 @@ switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
         var astro = search.match(/loc=([A-Z]\d\d:\d\d:\d\d:\d\d)/);
         if (astro != null) {
             astroPageUIChange();
-            // fleetQuickSum(); //Fix me later
-            // mapFleetOutline("#map_fleets", true); //Fix me later
         } else if (system != null) {;
-        }
-
-        break;
-    case 'base':
-        if (search.match(/base=\d+&view=structures/) != null) baseStructureUIChange('base_structures');
-        else if (search.match(/base=\d+&view=defenses/) != null) baseStructureUIChange('base_defenses');
-        else if (search.match(/base=\d+/) != null && search.match(/&view=/) == null && visibleBase()) {
-            fleetTableUIChange();
-
-            $('th:contains(Location)').append('&nbsp;<a href="bookmarks.aspx?action=add&astro=' + $('a[href^="map.aspx?loc="]').text() + '">bookmark</a>');
-            fleetQuickSum();
-            mapFleetOutline("#base_fleets", true);
-        }
-        break;
-    case 'board':
-        //boardUIChange();
-        break;
-    case 'credits':
-        //bridge.addCreditAutoParseButton();
-        break;
-    case 'empire':
-        if (search == '' || search.match(/view=bases_events/) != null){} //empireEventsUIChange();
-        else if (search.match(/view=fleets/) != null){} //fleetStatsUIChange();
-        else if (search.match(/view=trade/) != null) {
-            //empireTradeUIChange();
-        } else if (search.match(/view=scanners/) != null) {}//empireScannerUIChange();
-        else if (search.match(/view=units/) != null) {}//empireUnitsUIChange();
-        else if (search.match(/view=bases_capacities/) != null){} //empireCapacitiesUIChange();
-        else if (search.match(/view=structures/) != null){} //tableCursorHighlights('#empire_structures');
-        break;
-    case 'messages':
-        break;
-    case 'profile':
-        //profileUIChange();
-        break;
+                                   }
 }
 
 //==========================================
