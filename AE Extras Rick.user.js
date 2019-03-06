@@ -7,13 +7,14 @@
 // @grant GM_setValue
 // @grant GM_getValue
 // @grant GM_setClipboard
+// @grant    GM_openInTab
 // @grant unsafeWindow
 // @grant window.close
 // @grant window.focus
 // @grant GM_addStyle
-// @grant    GM_openInTab
 // @grant         GM_xmlhttpRequest
 // @include             http*://*.astroempires.com/*
+// @include             http://www.vig.vg/*
 // @exclude             http*://*.astroempires.com/
 // @exclude             http*://*.astroempires.com/home.aspx*
 // @exclude             http*://*.astroempires.com/login.aspx*
@@ -73,269 +74,268 @@ http://www.gnu.org/licenses/.
 */
 
 // Anti Admin detection added by Rick
-var canRun = true
-'use strict';
+var canRun = true;
 var href = window.location.href;
-var domain = href.substring(0,href.search('com')+4);
+var domain = href.substring(0, href.search('com') + 4);
 var detailHtmlInfo = "";
 
-    //Anti-Detection
-    //http://cdn.astroempires.com/javascript/js_jquery_debug_v1.0.js
-    var all_js = document.getElementsByTagName('script');
-    for(i=0; i < all_js.length; i++) {
-        var src = all_js[i].getAttributeNode("src");
-        if(src == null) continue;
-        var value = src.value;
-        //Log(value);
-        if(value.search("js_jquery_debug") > 0 ){
-            //var debugDetection = true
-            //if(debugDetection){
-            canRun = false
-            alert("Disabled, admins were looking.");
-            return;
-        }
+//Anti-Detection
+//http://cdn.astroempires.com/javascript/js_jquery_debug_v1.0.js
+var all_js = document.getElementsByTagName('script');
+for (i = 0; i < all_js.length; i++) {
+    var src = all_js[i].getAttributeNode("src");
+    if (src == null) continue;
+    var value = src.value;
+    //Log(value);
+    if (value.search("js_jquery_debug") > 0) {
+        //var debugDetection = true
+        //if(debugDetection){
+        canRun = false
+        alert("Disabled, admins were looking.");
+        return;
+    }
+}
+
+if (canRun) {
+    var totalStart = new Date();
+    var DEBUGNEWCODE = 0;
+
+    var scriptName = 'Kashikoi\'s  AE Bits';
+    var scriptId = '33239';
+    var scriptVersion = 1.31;
+    var chatlink = new Object;
+    chatlink.fenix = 'http://www.gamesurge.net/chat/?';
+    chatlink.gamma = 'http://www.gamesurge.net/chat/?';
+    chatlink.helion = 'http://moral-decay.net/chat/irc.php?nick=';
+    var calc_link = 'https://aebits.win/aeBattleCalc';
+    //==========================================
+    //Debug Setup
+    //==========================================
+    var DEBUG_KEY = "config_debug";
+    var LOG_LEVEL_KEY = "config_logLevel";
+
+    var LOG_LEVEL_DEBUG = 1;
+    var LOG_LEVEL_INFO = 2;
+    var LOG_LEVEL_WARN = 3;
+    var LOG_LEVEL_ERROR = 4;
+
+    var location = window.location.href;
+    var _site = "ae";
+    var _page = getPageType();
+    var LOG_LEVEL = parseNum(getSetting(LOG_LEVEL_KEY, 0));
+
+    if (!getSetting(DEBUG_KEY, false)) LOG_LEVEL = 0;
+    if (DEBUGNEWCODE) LOG_LEVEL = 4;
+
+
+    // console = ff, unsafewindow.console = firebug, else custom
+
+    try {
+        var debugwith;
+        if ((console && console.log) || (unsafeWindow.console && unsafeWindow.console.log)) debugwith = "firefox";
+        if (unsafeWindow.console && unsafeWindow.console.firebug) debugwith = "firebug";
+        var console = {
+            log: function() // Basic logging function for loading etc
+            {
+                if (LOG_LEVEL >= 1 && debugwith == "firebug") {
+                    if (arguments.length == 1 && typeof(arguments[0]) == "string") {
+                        unsafeWindow.console.log("Location: " + location +
+                            " \nLog(" + typeof(arguments) + "): " + arguments[0]);
+                    } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
+                        unsafeWindow.console.log("Location: " + location +
+                            " \nLog(" + typeof(arguments) + "): %o", arguments);
+                    } else {
+                        unsafeWindow.console.log("Location: " + location +
+                            " \nLog(" + typeof(arguments) + "): " + arguments);
+                    }
+                    return;
+                }
+                if (LOG_LEVEL >= 1 && debugwith == "firefox") {
+                    //unsafeWindow.console.log("Location: " + location + " \nLog: " + arguments);
+                    return;
+                }
+                if (LOG_LEVEL >= 1 && !debugwith) {
+                    notify("\nError: " + arguments[0], MESSAGE_CLASS_ERROR);
+                    return;
+                }
+            },
+            info: function() // Show data relevent to any functions being worked on
+            {
+                if (LOG_LEVEL >= 2 && debugwith == "firebug") {
+                    if (arguments.length == 1 && typeof(arguments[0]) == "string") {
+                        unsafeWindow.console.error("Location: " + location +
+                            " \nInfo(" + typeof(arguments) + "): " + arguments[0]);
+                    } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
+                        unsafeWindow.console.error("Location: " + location +
+                            " \nInfo(" + typeof(arguments) + "): %o", arguments);
+                    } else {
+                        unsafeWindow.console.error("Location: " + location +
+                            " \nInfo(" + typeof(arguments) + "): " + arguments);
+                    }
+                    return;
+                }
+                if (LOG_LEVEL >= 2 && debugwith == "firefox") {
+                    console.log("Location: " + location + " \nInfo: " + arguments);
+                    return;
+                }
+                if (LOG_LEVEL >= 2 && !debugwith) {
+                    notify("Location: " + location + " \nError: " + arguments[0], MESSAGE_CLASS_ERROR);
+                    return;
+                }
+            },
+            warn: function() // Show any non-fatal errors
+            {
+                if (LOG_LEVEL >= 3 && debugwith == "firebug") {
+                    if (arguments.length == 1 && typeof(arguments[0]) == "string") {
+                        unsafeWindow.console.warn("Location: " + location + " \nWarn(" + typeof(arguments) + "): " + arguments[0]);
+                    } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
+                        unsafeWindow.console.warn("Location: " + location + " \nWarn(" + typeof(arguments) + "): %o", arguments);
+                    } else {
+                        unsafeWindow.console.warn("Location: " + location + " \nWarn(" + typeof(arguments) + "): " + arguments);
+                    }
+                    return;
+                }
+                if (LOG_LEVEL >= 3 && debugwith == "firefox") {
+                    console.log("Location: " + location + " \nWarning: " + arguments);
+                    return;
+                }
+                if (LOG_LEVEL >= 3 && !debugwith) {
+                    notify("Location: " + location + " \nError: " + arguments[0], MESSAGE_CLASS_ERROR);
+                    return;
+                }
+            },
+            error: function() // If error is breaking entire script
+            {
+                if (LOG_LEVEL == 4 && debugwith == "firebug") {
+                    if (arguments.length == 1 && typeof(arguments[0]) == "string") {
+                        unsafeWindow.console.error("Location: " + location + " \nError(" + typeof(arguments) + "): " + arguments[0]);
+                    } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
+                        unsafeWindow.console.error("Location: " + location + " \nError(" + typeof(arguments) + "): %o", arguments);
+                    } else {
+                        unsafeWindow.console.error("Location: " + location + " \nError(" + typeof(arguments) + "): " + arguments);
+                    }
+                    return;
+                }
+                if (LOG_LEVEL == 4 && debugwith == "firefox") {
+                    console.log("Location: " + location + " \nError: " + arguments);
+                    return;
+                }
+                if (LOG_LEVEL == 4 && !debugwith) {
+                    notify("Location: " + location + " \nError: " + arguments[0], MESSAGE_CLASS_ERROR);
+                    return;
+                }
+            }
+        };
+
+    } catch (e) {
+        notify("Console exception: " + e, MESSAGE_CLASS_ERROR);
     }
 
-if (canRun){
-var totalStart = new Date();
-var DEBUGNEWCODE = 0;
+    //if (document.title.indexOf("Error") != -1) return; // try to break out if connections down to avoid messing up error page
 
-var scriptName = 'Kashikoi\'s  AE Bits';
-var scriptId = '33239';
-var scriptVersion = 1.31;
-var chatlink = new Object;
-chatlink.fenix = 'http://www.gamesurge.net/chat/?';
-chatlink.gamma = 'http://www.gamesurge.net/chat/?';
-chatlink.helion = 'http://moral-decay.net/chat/irc.php?nick=';
-var calc_link = 'https://aebits.win/aeBattleCalc';
-//==========================================
-//Debug Setup
-//==========================================
-var DEBUG_KEY = "config_debug";
-var LOG_LEVEL_KEY = "config_logLevel";
+    if (DEBUGNEWCODE) console.log("Log level: " + LOG_LEVEL + " Server: " + getServer());
 
-var LOG_LEVEL_DEBUG = 1;
-var LOG_LEVEL_INFO = 2;
-var LOG_LEVEL_WARN = 3;
-var LOG_LEVEL_ERROR = 4;
+    if (DEBUGNEWCODE) // Test save to check if functional
+    {
+        setSetting("test", "working");
+        var val = getSetting("test", "BROKEN");
+        if (val != "working") console.log("Debug Test Save " + val);
+    }
 
-var location = window.location.href;
-var _site = "ae";
-var _page = getPageType();
-var LOG_LEVEL = parseNum(getSetting(LOG_LEVEL_KEY, 0));
+    //==========================================
+    //-----------Preset Definitions-------------
+    //==========================================
 
-if (!getSetting(DEBUG_KEY, false)) LOG_LEVEL = 0;
-if (DEBUGNEWCODE) LOG_LEVEL = 4;
+    //NOTE: These are simpy defaults. There's no need to edit these here in the script.
+    //All names and values are configurable from the production page.
 
 
-// console = ff, unsafewindow.console = firebug, else custom
+    var PRESET_KEYS = new Array("Fighters", "Bombers", "Heavy Bombers", "Ion Bombers", "Corvette", "Recycler", "Destroyer", "Frigate", "Ion Frigate",
+        "Scout Ship", "Outpost Ship", "Cruiser", "Carrier", "Heavy Cruiser", "Battleship", "Fleet Carrier", "Dreadnought", "Titan", "Leviathan", "Death Star", "Goods");
+    var DEFAULT_PRESET_1 = "500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
+    var DEFAULT_PRESET_2 = "50,0,0,0,20,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
+    var DEFAULT_PRESET_3 = "60,0,0,0,0,0,0,0,0,0,0,8,0,4,0,0,0,0,0,0,0";
+    var DEFAULT_PRESET_4 = "120,0,0,0,0,0,0,0,0,0,0,16,0,8,0,0,0,0,0,0,0";
+    var DEFAULT_PRESET_NAME_1 = "Fighters";
+    var DEFAULT_PRESET_NAME_2 = "Light Fleet";
+    var DEFAULT_PRESET_NAME_3 = "Heavy Fleet";
+    var DEFAULT_PRESET_NAME_4 = "Double Heavy Fleet";
+    var PRESET_1_NAME_KEY = "PRESET_1_NAME";
+    var PRESET_2_NAME_KEY = "PRESET_2_NAME";
+    var PRESET_3_NAME_KEY = "PRESET_3_NAME";
+    var PRESET_4_NAME_KEY = "PRESET_4_NAME";
+    var PRESET_1_VALUE_KEY = "PRESET_1_VALUE";
+    var PRESET_2_VALUE_KEY = "PRESET_2_VALUE";
+    var PRESET_3_VALUE_KEY = "PRESET_3_VALUE";
+    var PRESET_4_VALUE_KEY = "PRESET_4_VALUE";
 
-try {
-    var debugwith;
-    if ((console && console.log) || (unsafeWindow.console && unsafeWindow.console.log)) debugwith = "firefox";
-    if (unsafeWindow.console && unsafeWindow.console.firebug) debugwith = "firebug";
-    var console = {
-        log: function() // Basic logging function for loading etc
-        {
-            if (LOG_LEVEL >= 1 && debugwith == "firebug") {
-                if (arguments.length == 1 && typeof(arguments[0]) == "string") {
-                    unsafeWindow.console.log("Location: " + location +
-                        " \nLog(" + typeof(arguments) + "): " + arguments[0]);
-                } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
-                    unsafeWindow.console.log("Location: " + location +
-                        " \nLog(" + typeof(arguments) + "): %o", arguments);
-                } else {
-                    unsafeWindow.console.log("Location: " + location +
-                        " \nLog(" + typeof(arguments) + "): " + arguments);
-                }
-                return;
-            }
-            if (LOG_LEVEL >= 1 && debugwith == "firefox") {
-                //unsafeWindow.console.log("Location: " + location + " \nLog: " + arguments);
-                return;
-            }
-            if (LOG_LEVEL >= 1 && !debugwith) {
-                notify("\nError: " + arguments[0], MESSAGE_CLASS_ERROR);
-                return;
-            }
-        },
-        info: function() // Show data relevent to any functions being worked on
-        {
-            if (LOG_LEVEL >= 2 && debugwith == "firebug") {
-                if (arguments.length == 1 && typeof(arguments[0]) == "string") {
-                    unsafeWindow.console.error("Location: " + location +
-                        " \nInfo(" + typeof(arguments) + "): " + arguments[0]);
-                } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
-                    unsafeWindow.console.error("Location: " + location +
-                        " \nInfo(" + typeof(arguments) + "): %o", arguments);
-                } else {
-                    unsafeWindow.console.error("Location: " + location +
-                        " \nInfo(" + typeof(arguments) + "): " + arguments);
-                }
-                return;
-            }
-            if (LOG_LEVEL >= 2 && debugwith == "firefox") {
-                console.log("Location: " + location + " \nInfo: " + arguments);
-                return;
-            }
-            if (LOG_LEVEL >= 2 && !debugwith) {
-                notify("Location: " + location + " \nError: " + arguments[0], MESSAGE_CLASS_ERROR);
-                return;
-            }
-        },
-        warn: function() // Show any non-fatal errors
-        {
-            if (LOG_LEVEL >= 3 && debugwith == "firebug") {
-                if (arguments.length == 1 && typeof(arguments[0]) == "string") {
-                    unsafeWindow.console.warn("Location: " + location + " \nWarn(" + typeof(arguments) + "): " + arguments[0]);
-                } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
-                    unsafeWindow.console.warn("Location: " + location + " \nWarn(" + typeof(arguments) + "): %o", arguments);
-                } else {
-                    unsafeWindow.console.warn("Location: " + location + " \nWarn(" + typeof(arguments) + "): " + arguments);
-                }
-                return;
-            }
-            if (LOG_LEVEL >= 3 && debugwith == "firefox") {
-                console.log("Location: " + location + " \nWarning: " + arguments);
-                return;
-            }
-            if (LOG_LEVEL >= 3 && !debugwith) {
-                notify("Location: " + location + " \nError: " + arguments[0], MESSAGE_CLASS_ERROR);
-                return;
-            }
-        },
-        error: function() // If error is breaking entire script
-        {
-            if (LOG_LEVEL == 4 && debugwith == "firebug") {
-                if (arguments.length == 1 && typeof(arguments[0]) == "string") {
-                    unsafeWindow.console.error("Location: " + location + " \nError(" + typeof(arguments) + "): " + arguments[0]);
-                } else if ((typeof(arguments) == "object" || typeof(arguments) == "array")) {
-                    unsafeWindow.console.error("Location: " + location + " \nError(" + typeof(arguments) + "): %o", arguments);
-                } else {
-                    unsafeWindow.console.error("Location: " + location + " \nError(" + typeof(arguments) + "): " + arguments);
-                }
-                return;
-            }
-            if (LOG_LEVEL == 4 && debugwith == "firefox") {
-                console.log("Location: " + location + " \nError: " + arguments);
-                return;
-            }
-            if (LOG_LEVEL == 4 && !debugwith) {
-                notify("Location: " + location + " \nError: " + arguments[0], MESSAGE_CLASS_ERROR);
-                return;
-            }
-        }
-    };
+    var BASE_LIST_KEY = "BaseList";
+    var MESSAGE_CLASS = "notifier";
+    var MESSAGE_CLASS_ERROR = "notifierError";
+    GM_addStyle('#gm_update_alert {' +
+        '  position: relative;' +
+        '  top: 0px;' +
+        '  left: 0px;' +
+        '  margin:0 auto;' +
+        '  width:' + getTableWidth() + 'px;' +
+        '  background-color: #191919;' +
+        '  text-align: center;' +
+        '  font-size: 11px;' +
+        '  font-family: Tahoma;' +
+        '  border: #333333 solid 1px;' +
+        '  margin-bottom: 10px;' +
+        '  padding-left: 0px;' +
+        '  padding-right: 0px;' +
+        '  padding-top: 10px;' +
+        '  padding-bottom: 10px;' +
+        '  opacity: 0.82;' +
+        '}');
+    var startTime = totalStart;
+    var endTime;
+    var timerMessage = "";
 
-} catch (e) {
-    notify("Console exception: " + e, MESSAGE_CLASS_ERROR);
-}
+    var NAME_INDEX = 0;
 
-//if (document.title.indexOf("Error") != -1) return; // try to break out if connections down to avoid messing up error page
+    var FT_INDEX = 0;
+    var BO_INDEX = 1;
+    var HB_INDEX = 2;
+    var IB_INDEX = 3;
+    var CV_INDEX = 4;
+    var RC_INDEX = 5;
+    var DE_INDEX = 6;
+    var FR_INDEX = 7;
+    var IF_INDEX = 8;
+    var SS_INDEX = 9;
+    var OS_INDEX = 10;
+    var CR_INDEX = 11;
+    var CA_INDEX = 12;
+    var HC_INDEX = 13;
+    var BC_INDEX = 14;
+    var FC_INDEX = 15;
+    var DN_INDEX = 16;
+    var TI_INDEX = 17;
+    var LE_INDEX = 18;
+    var DS_INDEX = 19;
+    var BARRACKS_INDEX = 20;
+    var LASER_TURRETS_INDEX = 21;
+    var MISSLE_TURRETS_INDEX = 22;
+    var PLASMA_TURRENTS_INDEX = 23;
+    var ION_TURRETS_INDEX = 24;
+    var PHOTON_TURRETS_INDEX = 25;
+    var DISRUPTOR_TURRETS_INDEX = 26;
+    var DEFLECTION_SHIELDS_INDEX = 27;
+    var PLANETARY_SHIELD_INDEX = 28;
+    var PLANETARY_RING_INDEX = 29;
+    var fightingShips = "11111011100101101111";
+    var shipValues = new Array(5, 10, 30, 60, 20, 30, 40, 80, 120, 40, 100, 200, 400, 500, 2000, 2500, 10000, 50000, 200000, 500000);
+    var shipHangarValues = new Array(0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 4, 60, 8, 40, 400, 200, 1000, 4000, 10000);
+    var shipDefaultArmour = new Array(2, 2, 4, 4, 4, 2, 8, 12, 12, 2, 4, 24, 24, 48, 128, 96, 512, 2048, 6600, 13500, 4, 8, 16, 24, 32, 64, 256, 512, 2048, 1024);
+    var shipDefaultPower = new Array(2, 4, 10, 12, 4, 2, 8, 12, 14, 1, 2, 24, 12, 48, 168, 64, 756, 3402, 10000, 25500, 4, 8, 16, 24, 32, 64, 256, 2, 4, 2048);
+    var shipDefaultShield = new Array(0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2, 2, 4, 10, 8, 20, 30, 40, 60, 0, 0, 0, 0, 2, 6, 8, 16, 20, 12);
+    var shipShortName = new Array("FT", "BO", "HB", "IB", "CV", "RC", "DE", "FR", "IF", "SS", "OS", "CR", "CA", "HC", "BS", "FC", "DN", "TI", "LE", "DS", "BA", "LT", "MT", "PT", "IT", "OT", "DT", "FS", "PS", "PR");
 
-if (DEBUGNEWCODE) console.log("Log level: " + LOG_LEVEL + " Server: " + getServer());
-
-if (DEBUGNEWCODE) // Test save to check if functional
-{
-    setSetting("test", "working");
-    var val = getSetting("test", "BROKEN");
-    if (val != "working") console.log("Debug Test Save " + val);
-}
-
-//==========================================
-//-----------Preset Definitions-------------
-//==========================================
-
-//NOTE: These are simpy defaults. There's no need to edit these here in the script.
-//All names and values are configurable from the production page.
-
-
-var PRESET_KEYS = new Array("Fighters", "Bombers", "Heavy Bombers", "Ion Bombers", "Corvette", "Recycler", "Destroyer", "Frigate", "Ion Frigate",
-    "Scout Ship", "Outpost Ship", "Cruiser", "Carrier", "Heavy Cruiser", "Battleship", "Fleet Carrier", "Dreadnought", "Titan", "Leviathan", "Death Star", "Goods");
-var DEFAULT_PRESET_1 = "500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
-var DEFAULT_PRESET_2 = "50,0,0,0,20,0,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
-var DEFAULT_PRESET_3 = "60,0,0,0,0,0,0,0,0,0,0,8,0,4,0,0,0,0,0,0,0";
-var DEFAULT_PRESET_4 = "120,0,0,0,0,0,0,0,0,0,0,16,0,8,0,0,0,0,0,0,0";
-var DEFAULT_PRESET_NAME_1 = "Fighters";
-var DEFAULT_PRESET_NAME_2 = "Light Fleet";
-var DEFAULT_PRESET_NAME_3 = "Heavy Fleet";
-var DEFAULT_PRESET_NAME_4 = "Double Heavy Fleet";
-var PRESET_1_NAME_KEY = "PRESET_1_NAME";
-var PRESET_2_NAME_KEY = "PRESET_2_NAME";
-var PRESET_3_NAME_KEY = "PRESET_3_NAME";
-var PRESET_4_NAME_KEY = "PRESET_4_NAME";
-var PRESET_1_VALUE_KEY = "PRESET_1_VALUE";
-var PRESET_2_VALUE_KEY = "PRESET_2_VALUE";
-var PRESET_3_VALUE_KEY = "PRESET_3_VALUE";
-var PRESET_4_VALUE_KEY = "PRESET_4_VALUE";
-
-var BASE_LIST_KEY = "BaseList";
-var MESSAGE_CLASS = "notifier";
-var MESSAGE_CLASS_ERROR = "notifierError";
-GM_addStyle('#gm_update_alert {' +
-    '  position: relative;' +
-    '  top: 0px;' +
-    '  left: 0px;' +
-    '  margin:0 auto;' +
-    '  width:' + getTableWidth() + 'px;' +
-    '  background-color: #191919;' +
-    '  text-align: center;' +
-    '  font-size: 11px;' +
-    '  font-family: Tahoma;' +
-    '  border: #333333 solid 1px;' +
-    '  margin-bottom: 10px;' +
-    '  padding-left: 0px;' +
-    '  padding-right: 0px;' +
-    '  padding-top: 10px;' +
-    '  padding-bottom: 10px;' +
-    '  opacity: 0.82;' +
-    '}');
-var startTime = totalStart;
-var endTime;
-var timerMessage = "";
-
-var NAME_INDEX = 0;
-
-var FT_INDEX = 0;
-var BO_INDEX = 1;
-var HB_INDEX = 2;
-var IB_INDEX = 3;
-var CV_INDEX = 4;
-var RC_INDEX = 5;
-var DE_INDEX = 6;
-var FR_INDEX = 7;
-var IF_INDEX = 8;
-var SS_INDEX = 9;
-var OS_INDEX = 10;
-var CR_INDEX = 11;
-var CA_INDEX = 12;
-var HC_INDEX = 13;
-var BC_INDEX = 14;
-var FC_INDEX = 15;
-var DN_INDEX = 16;
-var TI_INDEX = 17;
-var LE_INDEX = 18;
-var DS_INDEX = 19;
-var BARRACKS_INDEX = 20;
-var LASER_TURRETS_INDEX = 21;
-var MISSLE_TURRETS_INDEX = 22;
-var PLASMA_TURRENTS_INDEX = 23;
-var ION_TURRETS_INDEX = 24;
-var PHOTON_TURRETS_INDEX = 25;
-var DISRUPTOR_TURRETS_INDEX = 26;
-var DEFLECTION_SHIELDS_INDEX = 27;
-var PLANETARY_SHIELD_INDEX = 28;
-var PLANETARY_RING_INDEX = 29;
-var fightingShips = "11111011100101101111";
-var shipValues = new Array(5, 10, 30, 60, 20, 30, 40, 80, 120, 40, 100, 200, 400, 500, 2000, 2500, 10000, 50000, 200000, 500000);
-var shipHangarValues = new Array(0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 4, 60, 8, 40, 400, 200, 1000, 4000, 10000);
-var shipDefaultArmour = new Array(2, 2, 4, 4, 4, 2, 8, 12, 12, 2, 4, 24, 24, 48, 128, 96, 512, 2048, 6600, 13500, 4, 8, 16, 24, 32, 64, 256, 512, 2048, 1024);
-var shipDefaultPower = new Array(2, 4, 10, 12, 4, 2, 8, 12, 14, 1, 2, 24, 12, 48, 168, 64, 756, 3402, 10000, 25500, 4, 8, 16, 24, 32, 64, 256, 2, 4, 2048);
-var shipDefaultShield = new Array(0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 2, 2, 4, 10, 8, 20, 30, 40, 60, 0, 0, 0, 0, 2, 6, 8, 16, 20, 12);
-var shipShortName = new Array("FT", "BO", "HB", "IB", "CV", "RC", "DE", "FR", "IF", "SS", "OS", "CR", "CA", "HC", "BS", "FC", "DN", "TI", "LE", "DS", "BA", "LT", "MT", "PT", "IT", "OT", "DT", "FS", "PS", "PR");
-
-//Tech in order, Laser, Missile, Plasma, Ion, Photon, Disruptor, Armour, Shielding
-var shipWeaponTechIndex = new Array(0, 1, 2, 3, 0, 0, 2, 1, 3, 0, 0, 2, 1, 2, 3, 3, 4, 5, 4, 5, 0, 0, 1, 2, 3, 4, 5, 3, 3, 4);
+    //Tech in order, Laser, Missile, Plasma, Ion, Photon, Disruptor, Armour, Shielding
+    var shipWeaponTechIndex = new Array(0, 1, 2, 3, 0, 0, 2, 1, 3, 0, 0, 2, 1, 2, 3, 3, 4, 5, 4, 5, 0, 0, 1, 2, 3, 4, 5, 3, 3, 4);
 }
 //==========================================
 // Check if new install
@@ -365,32 +365,33 @@ function installCheck() { // 2010-10, used once
 //---------Common Functions-----------
 //==========================================
 
-function getPlayerName(name){
+function getPlayerName(name) {
     var regex = /(\[.*?\])(.*)/;
     result = regex.exec(name);
-    if(result != null)
-    return result[2].substring(1);
+    if (result != null)
+        return result[2].substring(1);
     else return name;
 }
-function getGuild(name){
+
+function getGuild(name) {
     var regex = /\[.*?\]/;
     result = regex.exec(name);
-    if(result) return result[0];
+    if (result) return result[0];
     else return name;
 }
 
 function trim(str, chars) {
-	return ltrim(rtrim(str, chars), chars);
+    return ltrim(rtrim(str, chars), chars);
 }
 
 function ltrim(str, chars) {
-	chars = chars || "\\s";
-	return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
+    chars = chars || "\\s";
+    return str.replace(new RegExp("^[" + chars + "]+", "g"), "");
 }
 
 function rtrim(str, chars) {
-	chars = chars || "\\s";
-	return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
+    chars = chars || "\\s";
+    return str.replace(new RegExp("[" + chars + "]+$", "g"), "");
 }
 
 //From http://www.web-source.net/web_development/currency_formatting.htm
@@ -436,13 +437,13 @@ function parseNum(s) { // 2010-10, used 10+
     try {
         s += '';
         var re = /,/g;
-        if (thousandsFormatter == '%2C'){
+        if (thousandsFormatter == '%2C') {
             re = /,/g;
         }
-        if (thousandsFormatter == '%20'){
+        if (thousandsFormatter == '%20') {
             re = / /g;
         }
-        s = s.replace(re,"");
+        s = s.replace(re, "");
         return parseInt(s);
     } catch (e) {
         console.log('parseNum(' + s + ') error ' + e);
@@ -557,7 +558,7 @@ function getPageType() { // 2010-10, used once
             case 17:
                 if (location.indexOf('cmp=') != -1) return 'mapRegion';
                 else return 'mapAstro';
-            break;
+                break;
             case 20:
                 return 'mapSystem';
         }
@@ -1447,42 +1448,42 @@ function hideGoodTRs() {
 //Handle Trade Board Page
 //==========================================
 
-function highlightTradePartners(){
-    var color_partners = getSetting(HIGHLIGHT_TRADE_PARTNERS_KEY,true);
+function highlightTradePartners() {
+    var color_partners = getSetting(HIGHLIGHT_TRADE_PARTNERS_KEY, true);
     //console.log('Checking trade page');
 
     //if on the main empire page, only check links in the marquee
     //this saves time checking all the other links on the page that are useless
     var query = "//a[contains(@href,'profile.aspx') or contains(@href,'base.aspx') and not(contains(@class,'header'))]";
-    if(location.indexOf("empire.aspx")!=-1 && (getView()=="" || getView()=="Structures"))
-        query = "//marquee"+query;
-    if(location.indexOf("bases_events")!= -1) query = "//marquee"+query;
+    if (location.indexOf("empire.aspx") != -1 && (getView() == "" || getView() == "Structures"))
+        query = "//marquee" + query;
+    if (location.indexOf("bases_events") != -1) query = "//marquee" + query;
     //console.log(query);
 
-    var allLinks,item;
-        allLinks = document.evaluate(
+    var allLinks, item;
+    allLinks = document.evaluate(
         query,
         document,
         null,
         XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
         null);
     //Iterate through all and add only odd ones to name and node arrays.
-    var highlightPlayers = (getSetting(PLAYER_COLORS_KEY,null) != null) && getSetting(HIGHLIGHT_PLAYERS_KEY,true);
+    var highlightPlayers = (getSetting(PLAYER_COLORS_KEY, null) != null) && getSetting(HIGHLIGHT_PLAYERS_KEY, true);
     for (var i = 0; i < allLinks.snapshotLength; i++) {
         item = allLinks.snapshotItem(i);
         if (color_partners && isTradePartner(item.innerHTML)) {
             item.style.color = unescape(getSetting(HIGHLIGHT_TRADE_COLOUR_KEY));
         }
-        if(highlightPlayers) {
+        if (highlightPlayers) {
             var guild = getGuild(item.innerHTML);
             //Highlight by guild
             var color = getHighlightColorForGuild(guild);
-            if(color != null) {
+            if (color != null) {
                 item.style.color = color;
             }
             //Apply overrides
             var color = getHighlightColorForPlayer(getPlayerName(item.innerHTML));
-            if(color != null) {
+            if (color != null) {
                 item.style.color = color;
             }
         }
@@ -1924,7 +1925,7 @@ function fixQueues() {
     if (document.evaluate('//a[text()="remove"]', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null).snapshotLength > getSetting(MAX_QUEUES_KEY, 5))
         return;
     var queueTitle = getView();
-    console.log("Fixing queues :" +queueTitle);
+    console.log("Fixing queues :" + queueTitle);
     if (queueTitle == "Structures" || queueTitle == "Defenses" || queueTitle == "Research")
         queueTitle = "base-queue";
     if (queueTitle == "Production")
@@ -2235,28 +2236,29 @@ var fleetData = new Array(); //[guild],[incoming],[landed],[incoming today]
 var guildSummed = false;
 
 function sumFleets() {
-    try{
-        var my_nick = unescape(getSetting(MY_NAME_KEY,"Newb"));
+    try {
+        var my_nick = unescape(getSetting(MY_NAME_KEY, "Newb"));
         var sString = "//table[@id = 'map_fleets']";
-        if(location.indexOf("base.aspx?base=")!=-1) {
-            if(!getSetting(SUM_FLEETS_BASE,true)) throw "return";
+        if (location.indexOf("base.aspx?base=") != -1) {
+            if (!getSetting(SUM_FLEETS_BASE, true)) throw "return";
             sString = "//table[@id = 'base_fleets']";
         }
-        var rows = document.evaluate(sString,document,null,XPathResult.FIRST_ORDERED_NODE_TYPE,null).singleNodeValue;
-        if(!rows) throw "return";
+        var rows = document.evaluate(sString, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        if (!rows) throw "return";
         rows = rows.getElementsByClassName('layout listing sorttable')[0].childNodes[1].childNodes;
-        var formatNumbers = getSetting(FORMAT_NUMBERS_KEY,true);
-        var addFleets = getSetting(SUM_FLEETS_KEY,true);
-        var now = new Date(), future = new Date();
-        for(i=0;i<rows.length;i++) {
+        var formatNumbers = getSetting(FORMAT_NUMBERS_KEY, true);
+        var addFleets = getSetting(SUM_FLEETS_KEY, true);
+        var now = new Date(),
+            future = new Date();
+        for (i = 0; i < rows.length; i++) {
             //console.log(rows[i]);
             var row = rows[i];
 
             //while(row.childNodes[3].firstChild.textContent.indexOf"."
             //console.log(row.childNodes[3].firstChild.textContent);
             var size = parseNum(row.childNodes[3].firstChild.textContent);
-            if(formatNumbers) row.childNodes[3].firstChild.textContent = commaFormat(size);
-            if(addFleets) {
+            if (formatNumbers) row.childNodes[3].firstChild.textContent = commaFormat(size);
+            if (addFleets) {
                 var player = row.childNodes[1].firstChild.textContent;
                 var arrivalTimeCell = row.childNodes[2];
                 var guild = getGuild(player);
@@ -2265,12 +2267,12 @@ function sumFleets() {
                 var incomingToday = false;
                 //console.log(arrivalTimeCell);
                 //console.log(arrivalTimeCell.id.indexOf('time') +": "+ parseNum(arrivalTimeCell.title)+"-<"+((arrivalTimeCell.id.indexOf('time') != -1 || arrivalTimeCell.id.indexOf('checked') != -1) && (parseNum(arrivalTimeCell.title) <= 0)));
-                if(my_nick == p) {
-                    row.setAttribute("guild",p);
+                if (my_nick == p) {
+                    row.setAttribute("guild", p);
                 } else {
-                    row.setAttribute("guild",guild);
+                    row.setAttribute("guild", guild);
                 }
-                if((arrivalTimeCell.id.indexOf('time') != -1 || arrivalTimeCell.id.indexOf('checked') != -1) && (parseNum(arrivalTimeCell.title) >= 0) ) {
+                if ((arrivalTimeCell.id.indexOf('time') != -1 || arrivalTimeCell.id.indexOf('checked') != -1) && (parseNum(arrivalTimeCell.title) >= 0)) {
                     var time = arrivalTimeCell.title;
                     future.setTime(now.getTime() + (time * 1000));
                     incomingToday = (future.getDate() - now.getDate() == 0);
@@ -2278,139 +2280,131 @@ function sumFleets() {
                     //if(incomingToday) console.log("Incoming today");
                 }
                 //console.log(player +": "+size);
-                var incomingSize = incoming? size:0;
-                var incomingTodaySize = incomingToday? size:0;
-                addFleetSize(guild,size,incomingSize,incomingTodaySize);
-                if(my_nick == p && guild != p) // FIXME, breaks when there is a space in the nick
+                var incomingSize = incoming ? size : 0;
+                var incomingTodaySize = incomingToday ? size : 0;
+                addFleetSize(guild, size, incomingSize, incomingTodaySize);
+                if (my_nick == p && guild != p) // FIXME, breaks when there is a space in the nick
                 {
-                    addFleetSize(p,size,incomingSize,incomingTodaySize);
+                    addFleetSize(p, size, incomingSize, incomingTodaySize);
                 }
             }
         }
-        if(addFleets) {
-            if(guildSummed) insertFleetSummary();
+        if (addFleets) {
+            if (guildSummed) insertFleetSummary();
         }
     } catch (e) {
         //if (e !== "return") console.log("sumfleets error: "+e);
     }
-   // profile_context.end('sumFleets');
+    // profile_context.end('sumFleets');
 }
-function addFleetSize(guild,size,incomingSize,incomingTodaySize)
-{
+
+function addFleetSize(guild, size, incomingSize, incomingTodaySize) {
     //console.log("adding fleet size " +guild +" size: "+size+" incomingSize: "+incomingSize+" incomingToday: "+incomingTodaySize);
-     for(x=0;x<fleetData.length;x++)
-    {
+    for (x = 0; x < fleetData.length; x++) {
         //console.log("Searching... "+fleetData[i][0]);
-         if(fleetData[x][0]==guild)
-        {
+        if (fleetData[x][0] == guild) {
             //console.log("Found "+fleetData[i][0]);
-             if(incomingSize==0)
-             fleetData[x][1] = (fleetData[x][1] + size);
-             fleetData[x][2] = (fleetData[x][2] + incomingSize);
-             fleetData[x][3] = (fleetData[x][3] + incomingTodaySize);
-             guildSummed = true;
-             return;
+            if (incomingSize == 0)
+                fleetData[x][1] = (fleetData[x][1] + size);
+            fleetData[x][2] = (fleetData[x][2] + incomingSize);
+            fleetData[x][3] = (fleetData[x][3] + incomingTodaySize);
+            guildSummed = true;
+            return;
         }
     }
     //console.log("adding guild "+guild+" at index "+fleetData.length);
-     if(incomingSize==0)
-     fleetData[fleetData.length] = new Array(guild,size,0,0);
-     else
-     fleetData[fleetData.length] = new Array(guild,0,incomingSize,incomingTodaySize);
+    if (incomingSize == 0)
+        fleetData[fleetData.length] = new Array(guild, size, 0, 0);
+    else
+        fleetData[fleetData.length] = new Array(guild, 0, incomingSize, incomingTodaySize);
 }
-function insertFleetSummary()
-{
-    var html = "<tr><th>Fleet Summary</th></tr>"+
-    "<tr align='center'><td>"+
-        "<table class='box3_box-content box-content' width='600'>"+
-            "<tr><td class='box3_box-content-left box-content-left'> </td>"+
-            "<td class='box3_box-content-center box-content-center'>"+
-                "<div class='box3_content'>"+
-                    "<table class ='layout listing'>"+
-                        "<tr class='listing-header'><th width='25%'>Guild</th><th width='25%'>Incoming (Today)</th>"+
-                        "<th width='25%'>Landed</th><th width='25%'>Total Fleet Size</th><th/></tr>";
-    var style="";
-    var incoming,arrived,incomingToday,total;
-    var formatNumbers = getSetting(FORMAT_NUMBERS_KEY,true);
-    for(i=0;i<fleetData.length;i++)
-    {
+
+function insertFleetSummary() {
+    var html = "<tr><th>Fleet Summary</th></tr>" +
+        "<tr align='center'><td>" +
+        "<table class='box3_box-content box-content' width='600'>" +
+        "<tr><td class='box3_box-content-left box-content-left'> </td>" +
+        "<td class='box3_box-content-center box-content-center'>" +
+        "<div class='box3_content'>" +
+        "<table class ='layout listing'>" +
+        "<tr class='listing-header'><th width='25%'>Guild</th><th width='25%'>Incoming (Today)</th>" +
+        "<th width='25%'>Landed</th><th width='25%'>Total Fleet Size</th><th/></tr>";
+    var style = "";
+    var incoming, arrived, incomingToday, total;
+    var formatNumbers = getSetting(FORMAT_NUMBERS_KEY, true);
+    for (i = 0; i < fleetData.length; i++) {
         incoming = fleetData[i][2];
         arrived = fleetData[i][1];
         total = fleetData[i][1] + fleetData[i][2];
         incomingToday = fleetData[i][3];
         //console.log(incoming);
         var color = getHighlightColorForPlayer(getPlayerName(fleetData[i][0]));
-        if(color==null)
-        color = getHighlightColorForGuild(fleetData[i][0]);
-        if(getSetting(HIGHLIGHT_PLAYERS_KEY,true))
-        style = "style='color:"+color+"'";
-        if(formatNumbers)
-        {
-             incoming = commaFormat(incoming);
-             arrived = commaFormat(arrived);
-             incomingToday = commaFormat(incomingToday);
-             total = commaFormat(total);
+        if (color == null)
+            color = getHighlightColorForGuild(fleetData[i][0]);
+        if (getSetting(HIGHLIGHT_PLAYERS_KEY, true))
+            style = "style='color:" + color + "'";
+        if (formatNumbers) {
+            incoming = commaFormat(incoming);
+            arrived = commaFormat(arrived);
+            incomingToday = commaFormat(incomingToday);
+            total = commaFormat(total);
         }
-        html = html+"<tr align='center' "+style+"><td>"+fleetData[i][0]+"</td><td>"+incoming+" ("+incomingToday+")</td><td>"+arrived+"</td><td>"+total+
-        "</td><td><a id='showHide"+fleetData[i][0]+"' href='javascript: void(0)'>Hide</a></td></tr>";
+        html = html + "<tr align='center' " + style + "><td>" + fleetData[i][0] + "</td><td>" + incoming + " (" + incomingToday + ")</td><td>" + arrived + "</td><td>" + total +
+            "</td><td><a id='showHide" + fleetData[i][0] + "' href='javascript: void(0)'>Hide</a></td></tr>";
         //href='#showHide"+fleetData[i][0]+"'
     }
     html += "</table></div></td><td class='box3_box-content-right box-content-right'> </td></tr></table></td></tr>";
-     var newTable = document.createElement("table");
-     newTable.setAttribute("align","center");
-     newTable.setAttribute("class","box box-full box3");
-     newTable.innerHTML = html;
-     var sString = "//table[@id = 'map_fleets']";
-     if(location.indexOf("base.aspx?base=")!=-1)
-     {
+    var newTable = document.createElement("table");
+    newTable.setAttribute("align", "center");
+    newTable.setAttribute("class", "box box-full box3");
+    newTable.innerHTML = html;
+    var sString = "//table[@id = 'map_fleets']";
+    if (location.indexOf("base.aspx?base=") != -1) {
         sString = "//table[@id = 'base_fleets']";
-     }
-     var table = document.evaluate(
-            sString,
-            document,
-            null,
-            XPathResult.FIRST_ORDERED_NODE_TYPE,
-            null).singleNodeValue;
+    }
+    var table = document.evaluate(
+        sString,
+        document,
+        null,
+        XPathResult.FIRST_ORDERED_NODE_TYPE,
+        null).singleNodeValue;
     //console.log(table);
     //table.setAttribute("name","fleetTable");
-     table.parentNode.insertBefore(newTable,table);
-     var br = document.createElement("br");
-     table.parentNode.insertBefore(br,table);
+    table.parentNode.insertBefore(newTable, table);
+    var br = document.createElement("br");
+    table.parentNode.insertBefore(br, table);
     //console.log("registering events");
-     for(i=0;i<fleetData.length;i++)
-    {
-         var link = $$("showHide"+fleetData[i][0]);
-         link.addEventListener('click',getShowHideFleetClosure(fleetData[i][0]),true);
+    for (i = 0; i < fleetData.length; i++) {
+        var link = $$("showHide" + fleetData[i][0]);
+        link.addEventListener('click', getShowHideFleetClosure(fleetData[i][0]), true);
         //console.log(link);
         //console.log(getShowHideFleetClosure(fleetData[i][0]));
     }
 }
 
-function getShowHideFleetClosure(guild)
-{
-    function func(){
+function getShowHideFleetClosure(guild) {
+    function func() {
         toggleFleetVisibility(guild);
     };
     return func;
 }
-function toggleFleetVisibility(guild)
-{
+
+function toggleFleetVisibility(guild) {
     //console.log("Toggle visibility for :" +guild);
-     var guildRows = document.evaluate(
-    "//tr[@guild='"+guild+"']",
-     document,
-     null,
-     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-     null);
+    var guildRows = document.evaluate(
+        "//tr[@guild='" + guild + "']",
+        document,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null);
     //console.log("Found " + guildRows.snapshotLength + " fleet(s)");
-     for (i = 0; i < guildRows.snapshotLength; i++)
-    {
-         var row = guildRows.snapshotItem(i);
-         row.style.display = (row.style.display=="none")? "":"none";
-         row.style.visibility = (row.style.visibility=="hidden")? "":"hidden";
+    for (i = 0; i < guildRows.snapshotLength; i++) {
+        var row = guildRows.snapshotItem(i);
+        row.style.display = (row.style.display == "none") ? "" : "none";
+        row.style.visibility = (row.style.visibility == "hidden") ? "" : "hidden";
     }
-     var link = $$("showHide"+guild);
-     link.textContent= (link.textContent=="Show")? "Hide":"Show";
+    var link = $$("showHide" + guild);
+    link.textContent = (link.textContent == "Show") ? "Hide" : "Show";
     //document.body.scrollTop += 200;
 }
 //==========================================
@@ -3101,7 +3095,7 @@ function setAvailableShips() {
         null,
         XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
         null);
-    console.log("Found "+ships.snapshotLength+" ships types.");
+    console.log("Found " + ships.snapshotLength + " ships types.");
     for (var i = 0; i < ships.snapshotLength; i++) {
         console.log(ships.snapshotItem(i));
         availableShips[i] = ships.snapshotItem(i).textContent;
@@ -3111,9 +3105,9 @@ function setAvailableShips() {
 
 function isAvailableShip(ship) {
     for (var i = 0; i < availableShips.length; i++) {
-        console.log(ship+" = "+availableShips[i]);
+        console.log(ship + " = " + availableShips[i]);
         if (ship == availableShips[i]) {
-            console.log(ship+" = "+availableShips[i]);
+            console.log(ship + " = " + availableShips[i]);
             return true;
         }
     }
@@ -3130,7 +3124,7 @@ function createSupportMovementHref() {
         if (isAvailableShip(attackShips[i]))
             href = href + "javascript:zero('" + attackShips[i] + "');";
     }
-    console.log("support href: "+href);
+    console.log("support href: " + href);
     return href;
 }
 
@@ -4030,7 +4024,7 @@ function configBody(tab) {
 }
 
 function showConfig(page) {
-    console.log("Loading config for "+getServer());
+    console.log("Loading config for " + getServer());
     if (DEBUGNEWCODE) {
         if ($$('Config')) {
             //console.log("Removing old notify: "+document.body.firstChild.innerHTML);
@@ -4480,6 +4474,93 @@ var EventManager = {
     }
 };
 
+
+function astroPageUIChange() {
+    var el;
+    var centers = document.getElementsByTagName('center');
+    for (var x = 0; x < centers.length; x++) {
+        if (centers[x].textContent.indexOf('Galaxy') != -1) {
+            el = centers[x];
+            break;
+        }
+    }
+    var text_node = el.firstChild.lastChild;
+    if (text_node.nodeName != '#text') return;
+    var regex = /^(.*\()([A-Z]\d\d:\d\d:\d\d:\d\d)(\).*)$/;
+    var res = regex.exec(text_node.textContent);
+    if (res) {
+        text_node.textContent = res[1];
+        var textbox = document.createElement('input');
+        textbox.type = 'text';
+        textbox.id = 'loc';
+        textbox.size = 12;
+        textbox.value = res[2];
+        textbox.addEventListener('click', function() {
+            textbox.select();
+        }, false);
+        textbox.readonly = true;
+        var node2 = document.createTextNode(res[3]);
+        text_node.parentNode.insertBefore(node2, text_node.nextSibling);
+        text_node.parentNode.insertBefore(textbox, node2);
+    }
+}
+
+var search = decodeURIComponent(window.location.search).replace('?', '');
+switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
+    case 'fleet':
+        /**
+    if (search.match(/fleet=\d+/) != null && search.match(/view=/) == null) // fleetOverviewUIChange(); //Fix me later
+	else if (search.match(/fleet=\d+/) == null || search.match(/view=move_start/) != null) // fleetPageUIChange(); //Fix me later
+	else if (search.match(/fleet=\d+&view=move/) != null) // fleetMoveUIChange(); // Fix me later
+	else if (search.match(/fleet=\d+&view=attack/) != null) // mapFleetOutline("#fleets_attack-list", false); //Fix me later
+    **/
+        break;
+    case 'map':
+        var region = search.match(/loc=([A-Z]\d\d:\d\d)/);
+        var system = search.match(/loc=([A-Z]\d\d:\d\d:\d\d)/);
+        var astro = search.match(/loc=([A-Z]\d\d:\d\d:\d\d:\d\d)/);
+        if (astro != null) {
+            astroPageUIChange();
+            // fleetQuickSum(); //Fix me later
+            // mapFleetOutline("#map_fleets", true); //Fix me later
+        } else if (system != null) {;
+        }
+
+        break;
+    case 'base':
+        if (search.match(/base=\d+&view=structures/) != null) baseStructureUIChange('base_structures');
+        else if (search.match(/base=\d+&view=defenses/) != null) baseStructureUIChange('base_defenses');
+        else if (search.match(/base=\d+/) != null && search.match(/&view=/) == null && visibleBase()) {
+            fleetTableUIChange();
+
+            $('th:contains(Location)').append('&nbsp;<a href="bookmarks.aspx?action=add&astro=' + $('a[href^="map.aspx?loc="]').text() + '">bookmark</a>');
+            fleetQuickSum();
+            mapFleetOutline("#base_fleets", true);
+        }
+        break;
+    case 'board':
+        //boardUIChange();
+        break;
+    case 'credits':
+        //bridge.addCreditAutoParseButton();
+        break;
+    case 'empire':
+        if (search == '' || search.match(/view=bases_events/) != null){} //empireEventsUIChange();
+        else if (search.match(/view=fleets/) != null){} //fleetStatsUIChange();
+        else if (search.match(/view=trade/) != null) {
+            //empireTradeUIChange();
+        } else if (search.match(/view=scanners/) != null) {}//empireScannerUIChange();
+        else if (search.match(/view=units/) != null) {}//empireUnitsUIChange();
+        else if (search.match(/view=bases_capacities/) != null){} //empireCapacitiesUIChange();
+        else if (search.match(/view=structures/) != null){} //tableCursorHighlights('#empire_structures');
+        break;
+    case 'messages':
+        break;
+    case 'profile':
+        //profileUIChange();
+        break;
+}
+
 //==========================================
 //End aeproject code
 //==========================================
@@ -4633,20 +4714,21 @@ function reloadPage() {
 //////////////////////////////////////////
 /// Misc ////////////////////////////////
 /////////////////////////////////////////
-if(!document.getElementById("totalsize")){
-Array.prototype.inArray = function(value)
-// Returns true if the passed value is found in the
-// array. Returns false if it is not.
-{
-    var i;
-    for (i = 0; i < this.length; i++) {
-        // Matches identical (===), not just similar (==).
-        if (this[i] === value) {
-            return true;
+if (!document.getElementById("totalsize")) {
+    Array.prototype.inArray = function(value)
+    // Returns true if the passed value is found in the
+    // array. Returns false if it is not.
+    {
+        var i;
+        for (i = 0; i < this.length; i++) {
+            // Matches identical (===), not just similar (==).
+            if (this[i] === value) {
+                return true;
+            }
         }
+        return false;
     }
-    return false;
-}}
+}
 
 function enhanceConstructionPage(reload) {
     var urbanAdjust = 0,
@@ -4839,7 +4921,7 @@ function enhanceConstructionPage(reload) {
             techmultipliers = [0];
         else
             techmultipliers = GM_getValue(server + "techData", "0").split(",");
-            console.log("Tech Multipliers: " + techmultipliers);
+        console.log("Tech Multipliers: " + techmultipliers);
         var energytechmultiplier = (techmultipliers[0] * 0.05) + 1;
         console.log("Energy Multiplier: " + energytechmultiplier);
         var averageroute = GM_getValue(server + "averageRoute", "31");
@@ -6561,7 +6643,7 @@ function MapLocationJump() {
 // Rick New Functions (execution)
 //==========================================
 
-function cp_ae_rick(){
+function cp_ae_rick() {
     function fleetOverviewUIChange() {
         var ownfleet = $('a:contains(Rename)');
         var tbl = $('table:contains(Destination)');
@@ -6583,8 +6665,8 @@ function cp_ae_rick(){
             }
         }
     }
-if (location.indexOf("fleet.aspx?fleet=") != -1) {
-    fleetOverviewUIChange();
+    if (location.indexOf("fleet.aspx?fleet=") != -1) {
+        fleetOverviewUIChange();
     }
 }
 
@@ -6594,7 +6676,7 @@ function cp_ae_main() {
         try {
             serverTimeSetup();
         } catch (e) {
-            console.log("serverTimeSetup screwed up "+e+' '+e.lineNumber);
+            console.log("serverTimeSetup screwed up " + e + ' ' + e.lineNumber);
         }
         // ==========================================================
         // Send out an event for clevers script to detect my script
@@ -6844,11 +6926,11 @@ function cp_ae_main() {
         // Fleet Info Popup
         //-----------------------------------
         if (getSetting(FLEET_INFO_POPUP, true) && (location.indexOf("fleet.aspx") != -1 || location.indexOf("map.aspx?loc=") != -1 || location.indexOf("view=report.aspx") != -1 || location.indexOf("base.aspx?base=") != -1)) {
-                try {
-                    fleetInfoPopUp();
-                } catch (e) {
-                    console.log("Fleet Info Popup error: " + e)
-                }
+            try {
+                fleetInfoPopUp();
+            } catch (e) {
+                console.log("Fleet Info Popup error: " + e)
+            }
         }
 
         //-----------------------------------
@@ -7325,14 +7407,14 @@ function serverTimeAdjust() {
         var fro = null;
         for (var i = 0; i <= frc; i++) {
             fro = document.getElementById('fleetinfo' + i);
-            if (fro=null){
+            if (fro = null) {
                 fro = "false"
             }
             if (fro) {
                 if (getSetting(FLEET_INFO_POPUP_FADE, true)) {
                     setFading(fro, 100, 20, 200, function() {});
-                     document.body.removeChild(fro);
-                } else  document.body.removeChild(fro);
+                    document.body.removeChild(fro);
+                } else document.body.removeChild(fro);
             }
         }
     }
@@ -7356,7 +7438,7 @@ function fleetInfoPopUp() {
     var i = 0;
     while (links[i]) {
         if (/fleet.aspx\?fleet=[0-9]{4,}$/.test(links[i].href)) {
-            links[i].addEventListener('mouseover',mkIframe,false);
+            links[i].addEventListener('mouseover', mkIframe, false);
             links[i].addEventListener('mouseover', startTmr, false);
             links[i].addEventListener('mouseout', stopTmr, false);
 
@@ -7386,15 +7468,13 @@ function killIframes() { // used once
     var fro = false;
     for (var i = 0; i < frc; i++) {
         fro = document.getElementById('fleetinfo' + i);
-        if (fro!=null){
-        }
-        else {
+        if (fro != null) {} else {
             fro = false;
         }
         if (fro) {
             if (getSetting(FLEET_INFO_POPUP_FADE, true)) {
                 setFading(fro, 100, 20, 200, function() {});
-                 document.body.removeChild(fro);
+                document.body.removeChild(fro);
             } else {
                 document.body.removeChild(fro);
             }
@@ -7445,13 +7525,14 @@ function mkIframe(objct, evt) { // used once
         }
     });
 }
-if (canRun){
-try {
-    console.log("Trying CP_AE now.");
-    cp_ae_initalisation();
-} catch (e) {
-   // debug("\n General error: "+e+"\nLine Number: "+e.lineNumber,'error');
-    console.log("General error: " +e+ "Line Number: " +e.lineNUmber);
-}}
+if (canRun) {
+    try {
+        console.log("Trying CP_AE now.");
+        cp_ae_initalisation();
+    } catch (e) {
+        // debug("\n General error: "+e+"\nLine Number: "+e.lineNumber,'error');
+        console.log("General error: " + e + "Line Number: " + e.lineNUmber);
+    }
+}
 var totalEnd = new Date();
 //profile_context.end('aebits global');
