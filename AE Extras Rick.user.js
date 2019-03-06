@@ -3227,6 +3227,7 @@ function formatVariousNumbers() {
 }
 
 function sumSingleFleet() {
+    /**
     var regex = /<td><b>(.*?)<\/b><\/td><td align=.*?>([0-9\.,]+?)<\/td>/ig;
     var source = document.body.innerHTML,
         result;
@@ -3263,7 +3264,7 @@ function sumSingleFleet() {
 
     table.innerHTML = table.innerHTML + "<span id='fightingsize'><tr><td><b>Fighting Size</b></td><td align='center'>" + fightingSize + "</td></tr></span>" +
         "<span id='totalsize'><tr><td><b>Total Size</b></td><td align='center'>" + totalSize + "</td></tr></span>";
-
+**/
 }
 
 //==========================================
