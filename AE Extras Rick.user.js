@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
-// @version		1.35
+// @version		1.36
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -49,21 +49,25 @@ AE Bits (after vig stopped development) -- Rick (March 2, 2019)
 - Changed the quickbookmarks to allow scrolling. Meaning you can fill it up and the page will expand and allow you to scroll down to see all your links
 - General script clean up and performance enhancing
 
-------March 2, 2019------
+------March 2019------
 - Ported to Chrome, for TamperMonkey
 - Fixed issues with Fleet on Empire Page
 - Fixed player highlighting based on guild
 - Added a check for Admins
-
-
-------March 5, 2019------
-- Version 1.10
 - Ported function to convert astro locations to read-only input boxes, for easy copy/paste.
 - Auto guild setting should work now
 - Added in recyclers ON or OFF to fleets
 - Fixed fleet-popup, hovering over a fleet name should show what is inside that fleet now.
 - Fixed sidebar.. will add discord link or something like that later.
 - Fixed construction enhancer / helper
+- Added fleet move / attack buttons to main fleet.aspx page
+- Added bob link on player profiles
+- Added bob link to pending guild members
+- Empire structures highlighting
+- Added 'free fleets' on Empire / Units page
+- Added base arrows on owned bases, to navigate easier
+- Added fleet move / attack buttons on map
+- Fixed parsing of debris on map
 
 ----------------------
 Disclaimer
@@ -112,11 +116,7 @@ if (canRun) {
 
     var scriptName = 'Rick\'s  AE Bits';
     var scriptId = '33239';
-    var scriptVersion = 1.35;
-    var chatlink = new Object;
-    chatlink.fenix = 'http://www.gamesurge.net/chat/?';
-    chatlink.gamma = 'http://www.gamesurge.net/chat/?';
-    chatlink.helion = 'http://moral-decay.net/chat/irc.php?nick=';
+    var scriptVersion = 1.36;
     var calc_link = 'https://aebits.win/aeBattleCalc';
     //==========================================
     //Debug Setup
@@ -6705,7 +6705,12 @@ function cp_ae_rick() {
 		var result = td.text().match(/Player: (\d+)/);
         thisPlayerId = result[1];
     }
-
+	function fleetPageUIChange() {
+		var fleets,rows,row,href,i;fleets = document.getElementsByClassName('layout listing sorttable')[0];
+		if (!fleets) return
+		rows = fleets.rows;for (i = 1; i < rows.length; i++) {row = rows[i];href = row.cells[0].firstChild.href;if (row.cells[2].innerHTML == '') row.cells[2].innerHTML = '<small><a href="' + href + '&view=move">Move</a></small>';if (row.cells[3].innerHTML == '') row.cells[3].innerHTML = '<small><a href="' + href + '&view=attack">Attack</a></small>';
+		}
+} // adds move and attack to main fleet page
 	function bobifyPending(pending) {
 		var row = pending.firstChild.firstChild;
 		row.insertCell(-1).textContent = 'Bob';
@@ -6730,6 +6735,9 @@ function cp_ae_rick() {
         case 'fleet':
             if (location.indexOf("fleet.aspx?fleet=") != -1) {
                 fleetOverviewUIChange();
+            }
+            if (location.indexOf("fleet.aspx") != -1) {
+                fleetPageUIChange();
             }
             break;
         case 'map':
