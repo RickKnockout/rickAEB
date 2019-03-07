@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
-// @version		1.10
+// @version		1.35
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -110,9 +110,9 @@ if (canRun) {
     var totalStart = new Date();
     var DEBUGNEWCODE = 0;
 
-    var scriptName = 'Kashikoi\'s  AE Bits';
+    var scriptName = 'Rick\'s  AE Bits';
     var scriptId = '33239';
-    var scriptVersion = 1.31;
+    var scriptVersion = 1.35;
     var chatlink = new Object;
     chatlink.fenix = 'http://www.gamesurge.net/chat/?';
     chatlink.gamma = 'http://www.gamesurge.net/chat/?';
@@ -6718,6 +6718,7 @@ function cp_ae_rick() {
 		link.target = '_blank';
 		cent.appendChild(link);
 	}
+
     var search = decodeURIComponent(window.location.search).replace('?', '');
     switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
         case 'fleet':
@@ -6740,6 +6741,11 @@ function cp_ae_rick() {
 			break;
         case 'base':
             base_arrows();
+            break;
+        case 'empire':
+            if (search.match(/view=units/) != null) {
+                empireUnitsUIChange();
+            }
             break;
     }
     if (location.indexOf('base.aspx') !== -1 || location.indexOf('map.aspx') !== 1 ){
@@ -6959,6 +6965,7 @@ function cp_ae_main() {
         if (location.indexOf('empire.aspx?view=fleets') != -1) {
             if (getSetting(SHOW_TOTAL_FLEET_ROW_KEY, true) || getSetting(SHOW_ATTACK_SIZE_KEY, true) || getSetting(ADD_FLEET_MOVE_LINK_KEY, true)) {
                 sumShips();
+                empireFleetUIChange();
             }
             onFeatureComplete("Advanced Fleet Page");
         }
@@ -7098,6 +7105,40 @@ function cp_ae_main() {
         //debug("General exception raised cp_ae_main: "+e+' '+e.lineNumber,'error');
     }
     //profile_context.end('cp_ae_main');
+}
+
+
+function empireFleetUIChange() {
+		$('#empire_fleets table tr:gt(0)').each(function() {
+			var obj = $(this);
+			if (obj.children('td:eq(1)').text().substring(0, 1) != '*') {
+				var link = $('a:first', obj);
+				link.attr('href', link.attr('href') + '&view=move');
+			}
+		}).hover(function() { // FIXME, replace with css
+			$(this).css({
+				'background': '#333333',
+				'color': 'red'
+			});
+			$('td', this).css('color', '');
+		}, function() {
+			$(this).css({
+				'background': '',
+				'color': ''
+			});
+			$('td:even', this).css('color', '#aaaaaa');
+		}).find('td:even:gt(0)').add('#empire_fleets table tr:eq(0) th:even:gt(0)').css({
+			'color': '#aaaaaa',
+			'background': 'black'
+		});
+}
+
+function empireUnitsUIChange() {
+			var table = $('#empire_units_summary table');
+			var total_fleets = Number(table.find('tr:contains(Maximum Number of Fleets) th:last').text());
+			var num_fleets = Number(table.find('tr:contains(Number of Fleets) td:last').text());
+			table.append("<tr><td>&nbsp;</td><td></td></tr><tr align='center'><th>Free Fleets</th><td>"
+					+ (total_fleets - num_fleets) + "</td></tr>");
 }
 
 function isBattleResultPage() {
