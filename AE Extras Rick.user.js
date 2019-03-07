@@ -6731,6 +6731,7 @@ function cp_ae_rick() {
             var astro = search.match(/loc=([A-Z]\d\d:\d\d:\d\d:\d\d)/);
             if (astro != null) {
                 astroPageUIChange();
+                break;
             } else if (system != null) {
                 break;
             }
