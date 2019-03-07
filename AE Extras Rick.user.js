@@ -6706,6 +6706,13 @@ function cp_ae_rick() {
         thisPlayerId = result[1];
     }
 
+	function bobifyPending(pending) {
+		var row = pending.firstChild.firstChild;
+		row.insertCell(-1).textContent = 'Bob';
+		while (row = row.nextSibling) {
+			row.insertCell(-1).innerHTML = '<a href="http://www.rockymoon.com/bob/Charts/' + server + '/Player/index/' + row.firstChild.textContent + '" target="_new">Link</a>';
+		}
+	}
     function profileUIChange() { // show bob summary
 		parseProfile();
         var rk_footer = document.getElementById('rk_footer');
@@ -6718,7 +6725,6 @@ function cp_ae_rick() {
 		link.target = '_blank';
 		cent.appendChild(link);
 	}
-
     var search = decodeURIComponent(window.location.search).replace('?', '');
     switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
         case 'fleet':
@@ -6747,6 +6753,12 @@ function cp_ae_rick() {
                 empireUnitsUIChange();
             }
             break;
+       	case 'guild':
+			if (search.match(/guild=\d+/) == null) {
+                var pending_members = document.querySelector('#guild_pending-members table');
+                if (pending_members) bobifyPending(pending_members);
+            }
+			break;
     }
     if (location.indexOf('base.aspx') !== -1 || location.indexOf('map.aspx') !== 1 ){
         show_self_move();
