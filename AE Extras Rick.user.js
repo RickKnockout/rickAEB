@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
-// @version		1.36
+// @version		1.35
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -49,25 +49,21 @@ AE Bits (after vig stopped development) -- Rick (March 2, 2019)
 - Changed the quickbookmarks to allow scrolling. Meaning you can fill it up and the page will expand and allow you to scroll down to see all your links
 - General script clean up and performance enhancing
 
-------March 2019------
+------March 2, 2019------
 - Ported to Chrome, for TamperMonkey
 - Fixed issues with Fleet on Empire Page
 - Fixed player highlighting based on guild
 - Added a check for Admins
+
+
+------March 5, 2019------
+- Version 1.10
 - Ported function to convert astro locations to read-only input boxes, for easy copy/paste.
 - Auto guild setting should work now
 - Added in recyclers ON or OFF to fleets
 - Fixed fleet-popup, hovering over a fleet name should show what is inside that fleet now.
 - Fixed sidebar.. will add discord link or something like that later.
 - Fixed construction enhancer / helper
-- Added fleet move / attack buttons to main fleet.aspx page
-- Added bob link on player profiles
-- Added bob link to pending guild members
-- Empire structures highlighting
-- Added 'free fleets' on Empire / Units page
-- Added base arrows on owned bases, to navigate easier
-- Added fleet move / attack buttons on map
-- Fixed parsing of debris on map
 
 ----------------------
 Disclaimer
@@ -116,7 +112,11 @@ if (canRun) {
 
     var scriptName = 'Rick\'s  AE Bits';
     var scriptId = '33239';
-    var scriptVersion = 1.36;
+    var scriptVersion = 1.35;
+    var chatlink = new Object;
+    chatlink.fenix = 'http://www.gamesurge.net/chat/?';
+    chatlink.gamma = 'http://www.gamesurge.net/chat/?';
+    chatlink.helion = 'http://moral-decay.net/chat/irc.php?nick=';
     var calc_link = 'https://aebits.win/aeBattleCalc';
     //==========================================
     //Debug Setup
@@ -6572,9 +6572,10 @@ function cp_ae_rick() {
     var thisPlayerId; //for later
     var server = getServer();
     var footer = document.createElement('span');
-	footer.id = 'rk_footer';
-	footer.style.display = 'block';
-	document.body.appendChild(footer);
+    footer.id = 'rk_footer';
+    footer.style.display = 'block';
+    document.body.appendChild(footer);
+
     function fleetOverviewUIChange() { // Adds recycler turn on / off to your fleets
         var ownfleet = $('a:contains(Rename)');
         var tbl = $('table:contains(Destination)');
@@ -6596,7 +6597,7 @@ function cp_ae_rick() {
         }
     }
 
-    function base_arrows() {        // adds base arrows "<" and ">" to base pages
+    function base_arrows() { // adds base arrows "<" and ">" to base pages
         var base_box = document.getElementsByTagName('select')[0];
         if (base_box == undefined) return;
         var last;
@@ -6668,68 +6669,110 @@ function cp_ae_rick() {
     }
 
     function show_self_move() { //adds move and attack links to your own fleets
-		var table;
-		var idregex = /player=(\d+)/;
-			var tables = document.getElementsByTagName('table');
-			for (var x=0; x<tables.length;x++) {
-				if (tables[x].textContent.indexOf('FleetPlayerArrivalSize') != -1) {
-					if (tables[x].textContent.indexOf('FLEETS SUMMARY') != -1) {
-					} else {
-						table = tables[x];
-					}
-				}
-			}
-		if (!table) return;
-		var rows = table.getElementsByTagName('tr');
-		var my_playerid = document.getElementById("account").nextSibling.innerText;
-		for (var y=1; y < rows.length; y++) {
-			var row = rows[y];
-			var link = rows[y].getElementsByTagName('a')[1];
-			var fleet_link = rows[y].getElementsByTagName('a')[0];
-			if (link) {
-				var res = idregex.exec(link.href);
-				if (res) {
-					if (res[1] == my_playerid) {
-						var cell = row.getElementsByTagName('td')[2];
-						if (!cell.textContent && !cell.id && !cell.title) cell.innerHTML = '<a href="'+fleet_link.href+'&view=move">Move</a>-<a href="'+fleet_link.href+'&view=attack">Attack</a>';
-					}
-				}
-			}
-		}
-	}
+        var table;
+        var idregex = /player=(\d+)/;
+        var tables = document.getElementsByTagName('table');
+        for (var x = 0; x < tables.length; x++) {
+            if (tables[x].textContent.indexOf('FleetPlayerArrivalSize') != -1) {
+                if (tables[x].textContent.indexOf('FLEETS SUMMARY') != -1) {} else {
+                    table = tables[x];
+                }
+            }
+        }
+        if (!table) return;
+        var rows = table.getElementsByTagName('tr');
+        var my_playerid = document.getElementById("account").nextSibling.innerText;
+        for (var y = 1; y < rows.length; y++) {
+            var row = rows[y];
+            var link = rows[y].getElementsByTagName('a')[1];
+            var fleet_link = rows[y].getElementsByTagName('a')[0];
+            if (link) {
+                var res = idregex.exec(link.href);
+                if (res) {
+                    if (res[1] == my_playerid) {
+                        var cell = row.getElementsByTagName('td')[2];
+                        if (!cell.textContent && !cell.id && !cell.title) cell.innerHTML = '<a href="' + fleet_link.href + '&view=move">Move</a>-<a href="' + fleet_link.href + '&view=attack">Attack</a>';
+                    }
+                }
+            }
+        }
+    }
 
-    function parseProfile(){
+    function empireEventsUIChange() {
+        $('small:contains("Note: (x) is equal to queue quantity")').remove();
+        var aBases = $('#empire_events a[href*="base.aspx"]');
+        var bases = 0;
+        for (var i = 0; i < aBases.length; i++) {
+            var href = aBases[i].href;
+            if (href.indexOf('view') > 0) continue;
+            bases++;
+        }
+        var div = $('table#empire_events table th:contains(Base)');
+        div.text('Base (' + bases + ')');
+        if ($('table#empire_events table tr td:nth-child(4) a[href^="profile"]').text() == '') {
+            $('table#empire_events table tr').each(function(i) {
+                if (i == 0) $('th:eq(3)', this).css({
+                    'display': 'none'
+                });
+                else
+                    $('td:eq(3)', this).css({
+                        'display': 'none'
+                    });
+            });
+        }
+        var th = $("th.th_header2").append('<a id="hideFleetTableLink" href="#">hide</a>').find('#hideFleetTableLink').click(function() {
+            var n = $(this).text();
+            if (n == 'show') n = 'hide';
+            else
+                n = 'show';
+            $(this).text(n).parents('tr').eq(0).siblings().toggle();
+            return false;
+        }).css({
+            'margin-left': '1em',
+            'font-size': 'smaller'
+        });
+    }
+
+    function parseProfile() {
         var table = $('table#profile_show table');
-		var text = table.find('th:eq(1)').text();
+        var text = table.find('th:eq(1)').text();
         var td = table.find('td:contains(Player)');
-		var result = td.text().match(/Player: (\d+)/);
+        var result = td.text().match(/Player: (\d+)/);
         thisPlayerId = result[1];
     }
-	function fleetPageUIChange() {
-		var fleets,rows,row,href,i;fleets = document.getElementsByClassName('layout listing sorttable')[0];
-		if (!fleets) return
-		rows = fleets.rows;for (i = 1; i < rows.length; i++) {row = rows[i];href = row.cells[0].firstChild.href;if (row.cells[2].innerHTML == '') row.cells[2].innerHTML = '<small><a href="' + href + '&view=move">Move</a></small>';if (row.cells[3].innerHTML == '') row.cells[3].innerHTML = '<small><a href="' + href + '&view=attack">Attack</a></small>';
-		}
-} // adds move and attack to main fleet page
-	function bobifyPending(pending) {
-		var row = pending.firstChild.firstChild;
-		row.insertCell(-1).textContent = 'Bob';
-		while (row = row.nextSibling) {
-			row.insertCell(-1).innerHTML = '<a href="http://www.rockymoon.com/bob/Charts/' + server + '/Player/index/' + row.firstChild.textContent + '" target="_new">Link</a>';
-		}
-	}
+
+    function fleetPageUIChange() {
+        var fleets, rows, row, href, i;
+        fleets = document.getElementsByClassName('layout listing sorttable')[0];
+        if (!fleets) return
+        rows = fleets.rows;
+        for (i = 1; i < rows.length; i++) {
+            row = rows[i];
+            href = row.cells[0].firstChild.href;
+            if (row.cells[2].innerHTML == '') row.cells[2].innerHTML = '<small><a href="' + href + '&view=move">Move</a></small>';
+            if (row.cells[3].innerHTML == '') row.cells[3].innerHTML = '<small><a href="' + href + '&view=attack">Attack</a></small>';
+        }
+    } // adds move and attack to main fleet page
+    function bobifyPending(pending) {
+        var row = pending.firstChild.firstChild;
+        row.insertCell(-1).textContent = 'Bob';
+        while (row = row.nextSibling) {
+            row.insertCell(-1).innerHTML = '<a href="http://www.rockymoon.com/bob/Charts/' + server + '/Player/index/' + row.firstChild.textContent + '" target="_new">Link</a>';
+        }
+    }
+
     function profileUIChange() { // show bob summary
-		parseProfile();
+        parseProfile();
         var rk_footer = document.getElementById('rk_footer');
-		var cent = document.createElement('center');
-		cent.appendChild(document.createElement('br'));
+        var cent = document.createElement('center');
+        cent.appendChild(document.createElement('br'));
         rk_footer.parentNode.insertBefore(cent, rk_footer);
-		link = document.createElement('a');
-		link.href = 'http://www.rockymoon.com/bob/Charts/' + server + '/Player/index/' + thisPlayerId;
-		link.textContent = 'Look up Bob for this player';
-		link.target = '_blank';
-		cent.appendChild(link);
-	}
+        link = document.createElement('a');
+        link.href = 'http://www.rockymoon.com/bob/Charts/' + server + '/Player/index/' + thisPlayerId;
+        link.textContent = 'Look up Bob for this player';
+        link.target = '_blank';
+        cent.appendChild(link);
+    }
     var search = decodeURIComponent(window.location.search).replace('?', '');
     switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
         case 'fleet':
@@ -6751,24 +6794,23 @@ function cp_ae_rick() {
                 break;
             }
         case 'profile':
-			profileUIChange();
-			break;
+            profileUIChange();
+            break;
         case 'base':
             base_arrows();
             break;
         case 'empire':
-            if (search.match(/view=units/) != null) {
-                empireUnitsUIChange();
-            }
+            if (search == '' || search.match(/view=bases_events/) != null) empireEventsUIChange();
+            if (search.match(/view=units/) != null) empireUnitsUIChange();
             break;
-       	case 'guild':
-			if (search.match(/guild=\d+/) == null) {
+        case 'guild':
+            if (search.match(/guild=\d+/) == null) {
                 var pending_members = document.querySelector('#guild_pending-members table');
                 if (pending_members) bobifyPending(pending_members);
             }
-			break;
+            break;
     }
-    if (location.indexOf('base.aspx') !== -1 || location.indexOf('map.aspx') !== 1 ){
+    if (location.indexOf('base.aspx') !== -1 || location.indexOf('map.aspx') !== 1) {
         show_self_move();
     }
 }
@@ -7129,36 +7171,36 @@ function cp_ae_main() {
 
 
 function empireFleetUIChange() {
-		$('#empire_fleets table tr:gt(0)').each(function() {
-			var obj = $(this);
-			if (obj.children('td:eq(1)').text().substring(0, 1) != '*') {
-				var link = $('a:first', obj);
-				link.attr('href', link.attr('href') + '&view=move');
-			}
-		}).hover(function() { // FIXME, replace with css
-			$(this).css({
-				'background': '#333333',
-				'color': 'red'
-			});
-			$('td', this).css('color', '');
-		}, function() {
-			$(this).css({
-				'background': '',
-				'color': ''
-			});
-			$('td:even', this).css('color', '#aaaaaa');
-		}).find('td:even:gt(0)').add('#empire_fleets table tr:eq(0) th:even:gt(0)').css({
-			'color': '#aaaaaa',
-			'background': 'black'
-		});
+    $('#empire_fleets table tr:gt(0)').each(function() {
+        var obj = $(this);
+        if (obj.children('td:eq(1)').text().substring(0, 1) != '*') {
+            var link = $('a:first', obj);
+            link.attr('href', link.attr('href') + '&view=move');
+        }
+    }).hover(function() { // FIXME, replace with css
+        $(this).css({
+            'background': '#333333',
+            'color': 'red'
+        });
+        $('td', this).css('color', '');
+    }, function() {
+        $(this).css({
+            'background': '',
+            'color': ''
+        });
+        $('td:even', this).css('color', '#aaaaaa');
+    }).find('td:even:gt(0)').add('#empire_fleets table tr:eq(0) th:even:gt(0)').css({
+        'color': '#aaaaaa',
+        'background': 'black'
+    });
 }
 
 function empireUnitsUIChange() {
-			var table = $('#empire_units_summary table');
-			var total_fleets = Number(table.find('tr:contains(Maximum Number of Fleets) th:last').text());
-			var num_fleets = Number(table.find('tr:contains(Number of Fleets) td:last').text());
-			table.append("<tr><td>&nbsp;</td><td></td></tr><tr align='center'><th>Free Fleets</th><td>"
-					+ (total_fleets - num_fleets) + "</td></tr>");
+    var table = $('#empire_units_summary table');
+    var total_fleets = Number(table.find('tr:contains(Maximum Number of Fleets) th:last').text());
+    var num_fleets = Number(table.find('tr:contains(Number of Fleets) td:last').text());
+    table.append("<tr><td>&nbsp;</td><td></td></tr><tr align='center'><th>Free Fleets</th><td>" +
+        (total_fleets - num_fleets) + "</td></tr>");
 }
 
 function isBattleResultPage() {
