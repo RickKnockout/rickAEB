@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
-// @version		1.35
+// @version		1.36
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -49,21 +49,24 @@ AE Bits (after vig stopped development) -- Rick (March 2, 2019)
 - Changed the quickbookmarks to allow scrolling. Meaning you can fill it up and the page will expand and allow you to scroll down to see all your links
 - General script clean up and performance enhancing
 
-------March 2, 2019------
+------March 2019------
 - Ported to Chrome, for TamperMonkey
 - Fixed issues with Fleet on Empire Page
 - Fixed player highlighting based on guild
 - Added a check for Admins
-
-
-------March 5, 2019------
-- Version 1.10
 - Ported function to convert astro locations to read-only input boxes, for easy copy/paste.
 - Auto guild setting should work now
 - Added in recyclers ON or OFF to fleets
 - Fixed fleet-popup, hovering over a fleet name should show what is inside that fleet now.
 - Fixed sidebar.. will add discord link or something like that later.
 - Fixed construction enhancer / helper
+- Replaced movement presets with just a "negate" button. Rest seemed messy.
+- Added lookups for Bob to guild pending members and to player profiles
+- Removed "occupied by" column in empire events, if there was nothing there.
+- Added move / attack buttons to fleets page, and to map pages
+- Displays debris values instead of "*" on map pages
+- Added a "Free Fleets" value in Empire / Units
+- Added some highlighting in Empire / Fleets
 
 ----------------------
 Disclaimer
@@ -112,11 +115,7 @@ if (canRun) {
 
     var scriptName = 'Rick\'s  AE Bits';
     var scriptId = '33239';
-    var scriptVersion = 1.35;
-    var chatlink = new Object;
-    chatlink.fenix = 'http://www.gamesurge.net/chat/?';
-    chatlink.gamma = 'http://www.gamesurge.net/chat/?';
-    chatlink.helion = 'http://moral-decay.net/chat/irc.php?nick=';
+    var scriptVersion = 1.36;
     var calc_link = 'https://aebits.win/aeBattleCalc';
     //==========================================
     //Debug Setup
@@ -3094,106 +3093,34 @@ function loadBaseTypes() {
 //Fleet movement links
 //==========================================
 var supportShips = new Array("Recycler", "Scout Ship", "Outpost Ship", "Carrier", "Fleet Carrier");
-var attackShips = new Array("Fighters", "Bombers", "Heavy Bombers", "Ion Bombers", "Corvette", "Destroyer", "Frigate", "Ion Frigate",
-    "Cruiser", "Heavy Cruiser", "Battleship", "Dreadnought", "Titan", "Leviathan", "Death Star");
-var availableShips = new Array();
-
-function setAvailableShips() {
-    var ships = document.evaluate(
-        "//td/b",
-        document,
-        null,
-        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-        null);
-    console.log("Found " + ships.snapshotLength + " ships types.");
-    for (var i = 0; i < ships.snapshotLength; i++) {
-        console.log(ships.snapshotItem(i));
-        availableShips[i] = ships.snapshotItem(i).textContent;
-    }
-    console.log(availableShips);
-}
-
-function isAvailableShip(ship) {
-    for (var i = 0; i < availableShips.length; i++) {
-        console.log(ship + " = " + availableShips[i]);
-        if (ship == availableShips[i]) {
-            console.log(ship + " = " + availableShips[i]);
-            return true;
-        }
-    }
-    return false;
-}
-
-function createSupportMovementHref() {
-    var href = "";
-    for (var i = 0; i < supportShips.length; i++) {
-        if (isAvailableShip(supportShips[i]))
-            href = href + "javascript:maxquant('" + supportShips[i] + "');";
-    }
-    for (var i = 0; i < attackShips.length; i++) {
-        if (isAvailableShip(attackShips[i]))
-            href = href + "javascript:zero('" + attackShips[i] + "');";
-    }
-    console.log("support href: " + href);
-    return href;
-}
-
-function createAttackMovementHref(includeFighters) {
-    var href = "";
-    for (var i = 0; i < supportShips.length; i++) {
-        if (isAvailableShip(supportShips[i]))
-            href = href + "javascript:zero('" + supportShips[i] + "');";
-    }
-    var i = 0;
-    if (!includeFighters) {
-        href = href + "javascript:zero('Fighters');";
-        i = 1;
-    }
-    for (i; i < attackShips.length; i++) {
-        if (isAvailableShip(attackShips[i]))
-            href = href + "javascript:maxquant('" + attackShips[i] + "');";
-    }
-    //console.log("attack href ("+includeFighters+"): "+href);
-    return href;
-}
-
-function createAllMovementNoFTHref() {
-    var href = "";
-    href = href + "javascript:zero('Fighters');";
-    for (var i = 0; i < supportShips.length; i++) {
-        if (isAvailableShip(supportShips[i]))
-            href = href + "javascript:maxquant('" + supportShips[i] + "');";
-    }
-    for (var i = 1; i < attackShips.length; i++) {
-        if (isAvailableShip(attackShips[i]))
-            href = href + "javascript:maxquant('" + attackShips[i] + "');";
-    }
-    return href;
-}
-
 function insertMoveFleetLinks() {
-    setAvailableShips();
-    var allNoFTHref = createAllMovementNoFTHref();
-    var supportHref = createSupportMovementHref();
-    var attackHref = createAttackMovementHref(true);
-    var attackNoFTHref = createAttackMovementHref(false);
-    try {
-        var cell = document.evaluate(
-            "//a[text()='All']",
-            document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-    } catch (e) {
-        return;
-    }
-    if (!cell) return;
-    cell = cell.parentNode;
-    var noneLink = cell.childNodes[2];
-    cell.removeChild(noneLink);
-    cell.innerHTML = cell.innerHTML + ' <a href="' + allNoFTHref + '">All(no FT)</a> - <a href="' + supportHref +
-        '">Support</a> - <a href="' + attackHref + '">Attack</a> - <a href="' + attackNoFTHref + '">Attack(no FT)</a> - ';
-    cell.setAttribute("colspan", "3");
-    cell.parentNode.removeChild(cell.nextSibling);
-    cell.parentNode.removeChild(cell.previousSibling);
-    cell.appendChild(noneLink);
+    $('a:contains(None)').parent().append('&nbsp;-&nbsp;').append(
+	$('<a href="#">Negate</a>').click(function() {
+	$('[id^="avail"]').each(function() {
+					var inp = $(this).parent().find('td input');
+					var v = inp.val();
+					var av = $(this).text();
+					if (av - v == 0) inp.val('');
+					else
+					inp.val(av - v);
+					update(this.id.substring(5));
+				})
+				return false;
+			}));
+			$('.link_negate').click(function() {
+				var parent = $(this).parents('tr');
+				var inp = parent.find('td input:first');
+				var avail = parent.find('td:eq(2)').text();
+				var val = inp.val();
+				if (avail - val <= 0) inp.val('');
+				else
+				inp.val(avail - val);
+				inp.keyup();
+			});
+			$('.link_none').click(function() {
+				var inp = $(this).parents('tr').find('td input:first');
+				inp.val('').keyup();
+			});
 }
 
 //==========================================
