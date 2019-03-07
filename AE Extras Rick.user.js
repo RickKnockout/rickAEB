@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
-// @version		1.11
+// @version		1.10
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -64,12 +64,6 @@ AE Bits (after vig stopped development) -- Rick (March 2, 2019)
 - Fixed fleet-popup, hovering over a fleet name should show what is inside that fleet now.
 - Fixed sidebar.. will add discord link or something like that later.
 - Fixed construction enhancer / helper
-
-------March 6, 2019------
-- Version 1.11
-- Added move/attack buttons to base pages
-- Added base arrows "<" and ">" for easy navigation between bases
-- Added debris parsing for map, it shows the amount of debris.
 
 ----------------------
 Disclaimer
@@ -6575,6 +6569,12 @@ function MapLocationJump() {
 //==========================================
 
 function cp_ae_rick() {
+    var thisPlayerId; //for later
+    var server = getServer();
+    var footer = document.createElement('span');
+	footer.id = 'rk_footer';
+	footer.style.display = 'block';
+	document.body.appendChild(footer);
     function fleetOverviewUIChange() { // Adds recycler turn on / off to your fleets
         var ownfleet = $('a:contains(Rename)');
         var tbl = $('table:contains(Destination)');
@@ -6698,6 +6698,26 @@ function cp_ae_rick() {
 		}
 	}
 
+    function parseProfile(){
+        var table = $('table#profile_show table');
+		var text = table.find('th:eq(1)').text();
+        var td = table.find('td:contains(Player)');
+		var result = td.text().match(/Player: (\d+)/);
+        thisPlayerId = result[1];
+    }
+
+    function profileUIChange() { // show bob summary
+		parseProfile();
+        var rk_footer = document.getElementById('rk_footer');
+		var cent = document.createElement('center');
+		cent.appendChild(document.createElement('br'));
+        rk_footer.parentNode.insertBefore(cent, rk_footer);
+		link = document.createElement('a');
+		link.href = 'http://www.rockymoon.com/bob/Charts/' + server + '/Player/index/' + thisPlayerId;
+		link.textContent = 'Look up Bob for this player';
+		link.target = '_blank';
+		cent.appendChild(link);
+	}
     var search = decodeURIComponent(window.location.search).replace('?', '');
     switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
         case 'fleet':
@@ -6714,6 +6734,9 @@ function cp_ae_rick() {
             } else if (system != null) {
                 break;
             }
+        case 'profile':
+			profileUIChange();
+			break;
         case 'base':
             base_arrows();
             break;
