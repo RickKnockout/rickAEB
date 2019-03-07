@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name                AE Extras Rick
 // @namespace           http://www.astroempires.com
-// @version		1.10
+// @version		1.11
 // @description         Various user interface enhancements for the Astro Empires MMOG (www.astroempires.com)
 // @author              Rick (previously knubile, coldphoenix, mapleson, vig)
 // @require http://code.jquery.com/jquery-1.7.1.min.js
@@ -64,6 +64,12 @@ AE Bits (after vig stopped development) -- Rick (March 2, 2019)
 - Fixed fleet-popup, hovering over a fleet name should show what is inside that fleet now.
 - Fixed sidebar.. will add discord link or something like that later.
 - Fixed construction enhancer / helper
+
+------March 6, 2019------
+- Version 1.11
+- Added move/attack buttons to base pages
+- Added base arrows "<" and ">" for easy navigation between bases
+- Added debris parsing for map, it shows the amount of debris.
 
 ----------------------
 Disclaimer
@@ -6569,7 +6575,7 @@ function MapLocationJump() {
 //==========================================
 
 function cp_ae_rick() {
-    function fleetOverviewUIChange() {
+    function fleetOverviewUIChange() { // Adds recycler turn on / off to your fleets
         var ownfleet = $('a:contains(Rename)');
         var tbl = $('table:contains(Destination)');
         var thtml = '';
@@ -6590,7 +6596,7 @@ function cp_ae_rick() {
         }
     }
 
-    function base_arrows() {
+    function base_arrows() {        // adds base arrows "<" and ">" to base pages
         var base_box = document.getElementsByTagName('select')[0];
         if (base_box == undefined) return;
         var last;
@@ -6631,7 +6637,7 @@ function cp_ae_rick() {
         }
     }
 
-    function astroPageUIChange() {
+    function astroPageUIChange() { //converts locations on astro level to read-only input boxes for easy copying
         var el;
         var centers = document.getElementsByTagName('center');
         for (var x = 0; x < centers.length; x++) {
@@ -6661,6 +6667,37 @@ function cp_ae_rick() {
         }
     }
 
+    function show_self_move() { //adds move and attack links to your own fleets
+		var table;
+		var idregex = /player=(\d+)/;
+			var tables = document.getElementsByTagName('table');
+			for (var x=0; x<tables.length;x++) {
+				if (tables[x].textContent.indexOf('FleetPlayerArrivalSize') != -1) {
+					if (tables[x].textContent.indexOf('FLEETS SUMMARY') != -1) {
+					} else {
+						table = tables[x];
+					}
+				}
+			}
+		if (!table) return;
+		var rows = table.getElementsByTagName('tr');
+		var my_playerid = document.getElementById("account").nextSibling.innerText;
+		for (var y=1; y < rows.length; y++) {
+			var row = rows[y];
+			var link = rows[y].getElementsByTagName('a')[1];
+			var fleet_link = rows[y].getElementsByTagName('a')[0];
+			if (link) {
+				var res = idregex.exec(link.href);
+				if (res) {
+					if (res[1] == my_playerid) {
+						var cell = row.getElementsByTagName('td')[2];
+						if (!cell.textContent && !cell.id && !cell.title) cell.innerHTML = '<a href="'+fleet_link.href+'&view=move">Move</a>-<a href="'+fleet_link.href+'&view=attack">Attack</a>';
+					}
+				}
+			}
+		}
+	}
+
     var search = decodeURIComponent(window.location.search).replace('?', '');
     switch (window.location.pathname.replace('/', '').replace('.aspx', '')) {
         case 'fleet':
@@ -6680,6 +6717,9 @@ function cp_ae_rick() {
         case 'base':
             base_arrows();
             break;
+    }
+    if (location.indexOf('base.aspx') !== -1 || location.indexOf('map.aspx') !== 1 ){
+        show_self_move();
     }
 }
 
